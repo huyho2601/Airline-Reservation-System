@@ -1,5 +1,6 @@
 package airline.service;
 
+import airline.dto.UpdateFlightRequest;
 import airline.entity.Flight;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface FlightService {
 
   Flight createFlight(Flight flight);
   
-  Flight updateFlight(Long id, Flight flight);
+  Flight updateFlight(String flightNumber, UpdateFlightRequest request);
 
-  Flight deleteFlight(Long id);
+  void deleteFlight(String flightNumber);
 }

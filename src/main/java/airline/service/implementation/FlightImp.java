@@ -5,10 +5,11 @@ import airline.service.FlightService;
 
 import java.util.List;
 
+import airline.dto.UpdateFlightRequest;
 import airline.entity.Flight;
 
 public class FlightImp implements FlightService {
-  
+
   private FlightRepsitory flightRepsitory;
 
   @Override
@@ -19,28 +20,32 @@ public class FlightImp implements FlightService {
   @Override
   public Flight getFlightByFlightNumber(String flightNumber) {
     Flight flight = flightRepsitory.findByFlightNumber(flightNumber)
-    .orElseThrow(() -> new RuntimeException("Flight not found: " + flightNumber));
+        .orElseThrow(() -> new RuntimeException("Flight not found: " + flightNumber));
     return flight;
   }
 
   @Override
   public Flight createFlight(Flight flight) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createFlight'");
+    return flightRepsitory.save(flight);
   }
 
   @Override
-  public Flight updateFlight(Long id, Flight flight) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateFlight'");
+  public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
+    Flight existingFlight = flightRepsitory.findByFlightNumber(flightNumber)
+        .orElseThrow(() -> new RuntimeException("Flight does not exist: " + flightNumber));
+
+    existingFlight.setArrivalTime(request.getArrivalTime());
+    existingFlight.setDepartureTime(request.getDepartureTime());
+    existingFlight.setOrigin(request.getOrigin());
+    existingFlight.setDestination(request.getDestination());
+    existingFlight.setPrice(request.getPrice());
+
+    return existingFlight;
   }
 
   @Override
-  public Flight deleteFlight(Long id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteFlight'");
+  public void deleteFlight(String flightNumber) {
+    Flight flight = getFlightByFlightNumber(null);
+    flightRepsitory.delete(flight);
   }
-
-  
-  
 }
