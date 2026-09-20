@@ -58,7 +58,7 @@ public class FlightImp implements FlightService {
   public Flight createFlight(Flight flight) {
 
     // Check for duplicate
-    if (flightRepsitory.existbyFlightNumber(flight.getFlightNumber())) {
+    if (flightRepsitory.existsByFlightNumber(flight.getFlightNumber())) {
       throw new DuplicateResourceException(
                 "Flight already exists: " + flight.getFlightNumber());
     }
