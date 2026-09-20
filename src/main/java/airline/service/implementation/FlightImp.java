@@ -2,12 +2,11 @@ package airline.service.implementation;
 
 import airline.repository.FlightRepsitory;
 import airline.service.FlightService;
+import airline.error.*;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import airline.dto.UpdateFlightRequest;
 import airline.entity.Flight;
@@ -22,23 +21,6 @@ public class FlightImp implements FlightService {
     this.flightRepsitory = flightRepsitory;
   }
 
-  // Reponses
-
-  // Not found
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String msg) {
-      super(msg);
-    }
-  }
-
-  // Existing entity
-  @ResponseStatus(HttpStatus.CONFLICT)
-  public class DuplicateResourceException extends RuntimeException {
-    public DuplicateResourceException(String message) {
-        super(message);
-    }
-  }
 
   
   // Main lofic
@@ -77,12 +59,13 @@ public class FlightImp implements FlightService {
     existingFlight.setDestination(request.getDestination());
     existingFlight.setPrice(request.getPrice());
 
-    return existingFlight;
+    return flightRepsitory.save(existingFlight);
   }
 
   @Override
   public void deleteFlight(String flightNumber) {
     Flight flight = getFlightByFlightNumber(null);
+
     flightRepsitory.delete(flight);
   }
 }
