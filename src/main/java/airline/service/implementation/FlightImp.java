@@ -5,13 +5,43 @@ import airline.service.FlightService;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import airline.dto.UpdateFlightRequest;
 import airline.entity.Flight;
 
+@Service 
 public class FlightImp implements FlightService {
 
-  private FlightRepsitory flightRepsitory;
+  private final FlightRepsitory flightRepsitory;
 
+  // Constructor
+  public FlightImp(FlightRepsitory flightRepsitory) {
+    this.flightRepsitory = flightRepsitory;
+  }
+
+  // Reponses
+
+  // Not found
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String msg) {
+      super(msg);
+    }
+  }
+
+  // Existing entity
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public class DuplicateResourceException extends RuntimeException {
+    public DuplicateResourceException(String message) {
+        super(message);
+    }
+  }
+
+  
+  // Main lofic
   @Override
   public List<Flight> getAllFlights() {
     return (List<Flight>) flightRepsitory.findAll();
@@ -20,12 +50,19 @@ public class FlightImp implements FlightService {
   @Override
   public Flight getFlightByFlightNumber(String flightNumber) {
     Flight flight = flightRepsitory.findByFlightNumber(flightNumber)
-        .orElseThrow(() -> new RuntimeException("Flight not found: " + flightNumber));
+        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
     return flight;
   }
 
   @Override
   public Flight createFlight(Flight flight) {
+
+    // Check for duplicate
+    if (flightRepsitory.existbyFlightNumber(flight.getFlightNumber())) {
+      throw new DuplicateResourceException(
+                "Flight already exists: " + flight.getFlightNumber());
+    }
+
     return flightRepsitory.save(flight);
   }
 

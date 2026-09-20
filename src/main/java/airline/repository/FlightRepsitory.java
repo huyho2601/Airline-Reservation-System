@@ -8,7 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface FlightRepsitory extends JpaRepository<Flight, Long> {
+
   Optional<Flight> findByFlightNumber(String flightNumber);
 
-  
+  boolean existbyFlightNumber(String fligtNumber);
 }
