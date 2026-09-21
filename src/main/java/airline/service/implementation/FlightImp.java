@@ -50,6 +50,8 @@ public class FlightImp implements FlightService {
 
   @Override
   public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
+
+    // Check if the flight already existed
     Flight existingFlight = flightRepsitory.findByFlightNumber(flightNumber)
         .orElseThrow(() -> new RuntimeException("Flight does not exist: " + flightNumber));
 
