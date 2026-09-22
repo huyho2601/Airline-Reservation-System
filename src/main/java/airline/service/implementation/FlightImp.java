@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import airline.dto.UpdateFlightRequest;
+import airline.dto.CreateFlightRequest;
 import airline.entity.Flight;
 
 @Service 
@@ -20,8 +21,6 @@ public class FlightImp implements FlightService {
   public FlightImp(FlightRepsitory flightRepsitory) {
     this.flightRepsitory = flightRepsitory;
   }
-
-
   
   // Main lofic
   @Override
@@ -37,15 +36,25 @@ public class FlightImp implements FlightService {
   }
 
   @Override
-  public Flight createFlight(Flight flight) {
+  public Flight createFlight(CreateFlightRequest createRequest) {
 
     // Check for duplicate
-    if (flightRepsitory.existsByFlightNumber(flight.getFlightNumber())) {
+    if (flightRepsitory.existsByFlightNumber(createRequest.getFlightNumber())) {
       throw new DuplicateResourceException(
-                "Flight already exists: " + flight.getFlightNumber());
+          "Flight already exists: " + createRequest.getFlightNumber());
     }
+    
+    // Create new flight instance
+    Flight newFlight = new Flight();
+    newFlight.setFlightNumber(createRequest.getFlightNumber());
+    newFlight.setArrivalTime(createRequest.getArrivalTime());
+    newFlight.setDepartureTime(createRequest.getDepartureTime());
+    newFlight.setOrigin(createRequest.getOrigin());
+    newFlight.setDestination(createRequest.getDestination());
+    newFlight.setPrice(createRequest.getPrice());
+    newFlight.setTotalSeats(createRequest.getTotalSeats());
 
-    return flightRepsitory.save(flight);
+    return flightRepsitory.save(newFlight);
   }
 
   @Override
@@ -53,7 +62,7 @@ public class FlightImp implements FlightService {
 
     // Check if the flight already existed
     Flight existingFlight = flightRepsitory.findByFlightNumber(flightNumber)
-        .orElseThrow(() -> new RuntimeException("Flight does not exist: " + flightNumber));
+        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
 
     existingFlight.setArrivalTime(request.getArrivalTime());
     existingFlight.setDepartureTime(request.getDepartureTime());
@@ -66,7 +75,7 @@ public class FlightImp implements FlightService {
 
   @Override
   public void deleteFlight(String flightNumber) {
-    Flight flight = getFlightByFlightNumber(null);
+    Flight flight = getFlightByFlightNumber(flightNumber);
 
     flightRepsitory.delete(flight);
   }

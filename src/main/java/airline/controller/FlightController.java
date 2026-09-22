@@ -2,9 +2,9 @@ package airline.controller;
 
 import airline.entity.Flight;
 import airline.service.FlightService;
+import airline.dto.CreateFlightRequest;
 import airline.dto.UpdateFlightRequest;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 
 import java.net.URI;
@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,7 @@ public class FlightController {
   }
 
   @PostMapping
-  public ResponseEntity<Flight> createFlight(@Valid @RequestBody Flight flight) {
+  public ResponseEntity<Flight> createFlight(@Valid @RequestBody CreateFlightRequest flight) {
 
     Flight newFlight = flightService.createFlight(flight);
 
@@ -59,10 +60,18 @@ public class FlightController {
   @PutMapping("/{flightNumber}")
   public ResponseEntity<Flight> updateFlight(@PathVariable String flightNumber,
       @RequestBody UpdateFlightRequest newRequest) {
-    
+
     Flight updatedFlight = flightService.updateFlight(flightNumber, newRequest);
 
     return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
+  }
+  
+  @DeleteMapping ("/{flightNumber}")
+  public ResponseEntity<String> deleteFlight(@PathVariable String flightNumber) {
+
+    flightService.deleteFlight(flightNumber);
+    
+    return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
   }
 
 }
