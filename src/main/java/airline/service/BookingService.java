@@ -7,11 +7,11 @@ public interface BookingService {
   List<Booking> getAllBookings();
 
   // get booking by id and userName
-  Booking getBooking(Long id, String userName);
+  Booking getBooking(long id, String userName);
 
   Booking createBooking(Booking booking);
 
   Booking updateBooking(Booking booking);
   
-  void deleteBooking(Long id);
+  void deleteBooking(long id);
 }

@@ -10,8 +10,8 @@ import airline.entity.enums.BookingStatus;
 public class Booking {
   
   @Id
-  // @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @ManyToOne
   @JoinColumn (name = "user_id", nullable = false)
@@ -40,10 +40,10 @@ public class Booking {
   }
 
   // Getters and Setters
-  public String getId() {
+  public long getId() {
     return id;
   }
-  public void setId(String id) {
+  public void setId(long id) {
     this.id = id;
   }
 
