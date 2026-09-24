@@ -24,6 +24,8 @@ import airline.service.BookingService;
 @Service 
 public class BookingImp implements BookingService {
 
+  private String USERNOTFOUND = "User not found: ";
+
   private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
   private final UserRepository userRepository;
@@ -52,13 +54,17 @@ public class BookingImp implements BookingService {
   public Booking getBooking(long id, String userName) {
 
     // Authenticate user
-    // User user = userRepository.findByUser_Name
+    User user = userRepository.findByUser_Name(userName)
+        .orElseThrow(() -> new ResourceNotFoundException(USERNOTFOUND + userName));
 
     Booking booking = bookingRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + id));
 
-    return booking;
+    if (booking.getUser().getId() != user.getId()) {
+      throw new AccessDeniedException("Not your booking");
+    }
 
+    return booking;
   }
   
   // 1: User should not be able to send id himself, this should come from the Spring Security (authentication concern)
