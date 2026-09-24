@@ -51,12 +51,9 @@ public class BookingImp implements BookingService {
   }
 
   @Override
-  public Booking getBooking(long id, String userName) {
+  public Booking getBooking(long id, User user) {
 
     // Authenticate user
-    User user = userRepository.findByUser_Name(userName)
-        .orElseThrow(() -> new ResourceNotFoundException(USERNOTFOUND + userName));
-
     Booking booking = bookingRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + id));
 
@@ -96,10 +93,14 @@ public class BookingImp implements BookingService {
   public Booking updateSeatBooking(long bookingId, long seatId, User currentUser) {
 
     // Retrieve existing booking and seat
-    Booking existingBooking = getBooking(bookingId, null);
+    Booking existingBooking = bookingRepository.findById(bookingId)
+    .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+    Seat existingSeat = existingBooking.getSeat();
 
     // Authenticate user
-    Seat existingSeat = existingBooking.getSeat();
+    if (existingBooking.getUser().getId() != currentUser.getId() && currentUser.getRole() != UserRole.ADMIN) {
+      throw new AccessDeniedException("Not your booking");
+    }
 
     // Retrieve new seat and check for availability
     Seat newSeat = seatRepository.findById(seatId)
@@ -116,11 +117,18 @@ public class BookingImp implements BookingService {
     return bookingRepository.save(existingBooking);
   }
 
+  // Cancel booking
   @Override
-  public void deleteBooking(long id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteBooking'");
+  public void deleteBooking(long id, User currentUser) {
+    
+    // Retrieve the booking
+    Booking booking = getBooking(id, currentUser);
+
+    // Release the seat
+    Seat seat = booking.getSeat();
+    seat.setStatus(SeatStatus.AVAILABLE);
+
+    bookingRepository.delete(booking);
   }
-  
 
 }

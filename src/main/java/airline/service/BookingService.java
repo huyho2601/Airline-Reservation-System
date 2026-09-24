@@ -10,11 +10,11 @@ public interface BookingService {
   List<Booking> getAllBookings(long adminId);
 
   // get booking by id and userName
-  Booking getBooking(long id, String userName);
+  public Booking getBooking(long id, User user);
 
   public Booking createBooking(CreateBookingRequest request, User user);
 
   public Booking updateSeatBooking(long bookingId, long seatId, User currentUser);
   
-  void deleteBooking(long id);
+  public void deleteBooking(long id, User currentUser);
 }
