@@ -37,7 +37,14 @@ public class Flight {
   public Flight() {
   }
 
-  public Flight(String flightNumber, String origin, String destination, LocalDateTime departureTime, LocalDateTime arrivalTime, BigDecimal price, int totalSeats) {
+  public Flight(
+      String flightNumber,
+      String origin,
+      String destination,
+      LocalDateTime departureTime,
+      LocalDateTime arrivalTime,
+      BigDecimal price,
+      int totalSeats) {
     this.flightNumber = flightNumber;
     this.origin = origin;
     this.destination = destination;
