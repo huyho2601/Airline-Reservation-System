@@ -12,7 +12,7 @@ public class User {
   private long id;
 
   @Column(name = "username", nullable = false)
-  private String name;
+  private String username;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
@@ -22,8 +22,8 @@ public class User {
   public User() {
   }
 
-  public User(String name, UserRole role) {
-    this.name = name;
+  public User(String username, UserRole role) {
+    this.username = username;
     this.role = role;
   }
 
@@ -37,11 +37,11 @@ public class User {
   }
 
   public String getName() {
-    return name;
+    return username;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setName(String username) {
+    this.username = username;
   }
 
   public UserRole getRole() {
