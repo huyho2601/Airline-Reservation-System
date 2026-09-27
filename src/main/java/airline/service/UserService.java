@@ -1,7 +1,7 @@
 package airline.service;
 
 import airline.dto.CreateUserRequest;
-import airline.dto.UpdateUserNameRequest;
+import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface UserService {
 
   public User createUser(CreateUserRequest user);
 
-  User updateUserName(long userId, UpdateUserNameRequest request);
+  User updateUserName(long userId, UpdateUserRequest request);
 
   void deleteUser(Long id);
 }

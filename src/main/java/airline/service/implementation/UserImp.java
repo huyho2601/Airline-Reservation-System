@@ -5,14 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import airline.dto.CreateUserRequest;
-import airline.dto.UpdateUserNameRequest;
+import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.error.ResourceNotFoundException;
 import airline.repository.UserRepository;
 import airline.service.UserService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 
 @Service
 public class UserImp implements UserService {
@@ -22,10 +21,10 @@ public class UserImp implements UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
-public UserImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-  this.userRepository = userRepository;
-  this.passwordEncoder = passwordEncoder;
-}
+  public UserImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   @Override
   public List<User> getAllUsers() {
@@ -62,18 +61,20 @@ public UserImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
   }
 
   @Override
-  public User updateUserName(long userId, UpdateUserNameRequest request) {
+  public User updateUserName(long userId, UpdateUserRequest request) {
     User curentUser = getUserById(userId);
 
     curentUser.setUsername(request.getUsername());
+    curentUser.setPassword(passwordEncoder.encode(request.getPassword()));
+    curentUser.setUserEmail(request.getEmail());
 
     return userRepository.save(curentUser);
   }
 
   @Override
   public void deleteUser(Long id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+    User currentUser = getUserById(id);
+    userRepository.delete(currentUser);
   }
 
 }
