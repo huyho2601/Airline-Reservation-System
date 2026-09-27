@@ -1,5 +1,7 @@
 package airline.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import airline.entity.enums.UserRole;
 import jakarta.persistence.*;
 
@@ -18,13 +20,38 @@ public class User {
   @Column(nullable = false)
   private UserRole role;
 
+  @Column(name = "email", nullable = false)
+  private String userEmail;
+
+  @JsonIgnore
+  @Column(name = "password", nullable = false)
+  private String password;
+
   // Constructors
   public User() {
   }
 
-  public User(String username, UserRole role) {
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public User(String username, UserRole role, String userEmail, String password) {
     this.username = username;
     this.role = role;
+    this.userEmail = userEmail;
+    this.password = password;
   }
 
   // Getters and Setters
@@ -36,11 +63,11 @@ public class User {
     this.id = id;
   }
 
-  public String getName() {
+  public String getUsername() {
     return username;
   }
 
-  public void setName(String username) {
+  public void setUsername(String username) {
     this.username = username;
   }
 
@@ -51,7 +78,5 @@ public class User {
   public void setRole(UserRole role) {
     this.role = role;
   }
-  
-
 
 }

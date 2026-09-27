@@ -10,11 +10,11 @@ import airline.service.UserService;
 import airline.service.implementation.UserImp;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -28,6 +28,11 @@ public class UserController {
     this.userService = userService;
   }
 
+  @GetMapping("/all_users")
+  public List<User> getAllUsers() {
+    return userService.getAllUsers();
+  }
+
   @GetMapping("/{userName}")
   public User getUserByName(@PathVariable String userName) {
     return userService.getUserByName(userName);
@@ -39,7 +44,7 @@ public class UserController {
 
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
         .path("{userName}")
-        .buildAndExpand(newUser.getName())
+        .buildAndExpand(newUser.getUsername())
         .toUri();
 
     return ResponseEntity.created(location).body(newUser);
