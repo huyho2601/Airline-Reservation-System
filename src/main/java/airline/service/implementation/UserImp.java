@@ -3,11 +3,14 @@ package airline.service.implementation;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import airline.dto.CreateUserRequest;
+import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.entity.enums.UserRole;
+import airline.error.InvalidCredentialsException;
 import airline.error.ResourceNotFoundException;
 import airline.repository.UserRepository;
 import airline.service.UserService;
@@ -62,14 +65,31 @@ public class UserImp implements UserService {
   }
 
   @Override
-  public User updateUserName(long userId, UpdateUserRequest request) {
+  @Transactional 
+  public User updateUser(long userId, UpdateUserRequest request) {
     User curentUser = getUserById(userId);
 
-    curentUser.setUsername(request.getUsername());
-    curentUser.setPassword(passwordEncoder.encode(request.getPassword()));
-    curentUser.setUserEmail(request.getEmail());
+    curentUser.setUsername(request.username());
+    curentUser.setUserEmail(request.email());
 
     return userRepository.save(curentUser);
+  }
+
+  @Override 
+  public User updateUserPassword(long userId, PasswordChangeRequest request)
+  {
+    User currentUser = getUserById(userId);
+
+    String currentHashedPassword = currentUser.getPassword();
+    String inputPassword = request.currentPassword();
+
+    if (!passwordEncoder.encode(inputPassword).matches(currentHashedPassword)) {
+      throw new InvalidCredentialsException("Password not matched");
+    }
+
+    currentUser.setPassword(passwordEncoder.encode(request.newPassword()));
+
+    return userRepository.save(currentUser);
   }
 
   @Override

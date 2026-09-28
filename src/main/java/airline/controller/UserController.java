@@ -42,37 +42,36 @@ public class UserController {
     return userService.getUserById(userId);
   }
 
-    @PostMapping
-    public ResponseEntity createUser(@RequestBody CreateUserRequest request) {
-      User newUser = userService.createUser(request);
+  @PostMapping
+  public ResponseEntity createUser(@RequestBody CreateUserRequest request) {
+    User newUser = userService.createUser(request);
 
-      URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-          .path("/api/users/{userId}")
-          .buildAndExpand(newUser.getId())
-          .toUri();
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+        .path("/api/users/{userId}")
+        .buildAndExpand(newUser.getId())
+        .toUri();
 
-      return ResponseEntity.created(location).body(newUser);
-    }
+    return ResponseEntity.created(location).body(newUser);
+  }
 
-    @PostMapping("/admin")
-    public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
-        User newUser = userService.createAdmin(request);
+  @PostMapping("/admin")
+  public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
+    User newUser = userService.createAdmin(request);
 
-       URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-          .path("/api/users/{userId}")
-          .buildAndExpand(newUser.getId())
-          .toUri();
+    URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+        .path("/api/users/{userId}")
+        .buildAndExpand(newUser.getId())
+        .toUri();
 
-      return ResponseEntity.created(location).body(newUser);
-    }
-  
+    return ResponseEntity.created(location).body(newUser);
+  }
 
   @PutMapping("/{userId}")
   public ResponseEntity updateUser(
       @PathVariable long userId,
       @RequestBody UpdateUserRequest request) {
-    
-    User updatedUser = userService.updateUserName(userId, request);
+
+    User updatedUser = userService.updateUser(userId, request);
 
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
