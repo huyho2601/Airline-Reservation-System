@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import airline.dto.CreateUserRequest;
+import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.service.UserService;
 import airline.service.implementation.UserImp;
+import jakarta.validation.Valid;
 
 import java.net.URI;
 import java.util.List;
@@ -74,6 +76,14 @@ public class UserController {
     User updatedUser = userService.updateUser(userId, request);
 
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+  }
+
+  @PutMapping("/{userId}/password")
+  public ResponseEntity<Void> changePassword(
+          @PathVariable long userId,
+          @Valid @RequestBody PasswordChangeRequest request) {
+      userService.updateUserPassword(userId, request);
+      return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/{userId}")
