@@ -42,7 +42,7 @@ public class UserController {
     return userService.getUserById(userId);
   }
 
-    @PostMapping("/create_user_account")
+    @PostMapping
     public ResponseEntity createUser(@RequestBody CreateUserRequest request) {
       User newUser = userService.createUser(request);
 
@@ -54,12 +54,12 @@ public class UserController {
       return ResponseEntity.created(location).body(newUser);
     }
 
-    @PostMapping("/create_admin_account")
+    @PostMapping("/admin")
     public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
         User newUser = userService.createAdmin(request);
 
-      URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-          .path("/{userId}")
+       URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+          .path("/api/users/{userId}")
           .buildAndExpand(newUser.getId())
           .toUri();
 
