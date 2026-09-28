@@ -7,15 +7,13 @@ public class CreateUserRequest {
   private String name;
   private String password;
   private String email;
-  private UserRole role;
 
     // Constructor
 
-    public CreateUserRequest(String name, String password, String email, UserRole role) {
+    public CreateUserRequest(String name, String password, String email) {
       this.name = name;
       this.password = password;
       this.email = email;
-      this.role = role;
     }
     
 
@@ -27,14 +25,6 @@ public class CreateUserRequest {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public UserRole getRole() {
-    return role;
-  }
-
-  public void setRole(UserRole role) {
-    this.role = role;
   }
 
   public String getPassword() {

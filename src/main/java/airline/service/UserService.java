@@ -14,6 +14,8 @@ public interface UserService {
 
   public User createUser(CreateUserRequest user);
 
+  public User createAdmin(CreateUserRequest userRequest);
+
   User updateUserName(long userId, UpdateUserRequest request);
 
   void deleteUser(Long id);

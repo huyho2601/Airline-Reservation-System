@@ -38,24 +38,37 @@ public class UserController {
   }
 
   @GetMapping("/{userId}")
-  public User getUserById(@PathVariable long useriD) {
-    return userService.getUserById(useriD);
+  public User getUserById(@PathVariable long userId) {
+    return userService.getUserById(userId);
   }
 
-  @PostMapping
-  public ResponseEntity createUser(@RequestBody CreateUserRequest request) {
-    User newUser = userService.createUser(request);
+    @PostMapping("/create_user_account")
+    public ResponseEntity createUser(@RequestBody CreateUserRequest request) {
+      User newUser = userService.createUser(request);
 
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-        .path("{userId}")
-        .buildAndExpand(newUser.getId())
-        .toUri();
+      URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+          .path("/api/users/{userId}")
+          .buildAndExpand(newUser.getId())
+          .toUri();
 
-    return ResponseEntity.created(location).body(newUser);
-  }
+      return ResponseEntity.created(location).body(newUser);
+    }
+
+    @PostMapping("/create_admin_account")
+    public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
+        User newUser = userService.createAdmin(request);
+
+      URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+          .path("/{userId}")
+          .buildAndExpand(newUser.getId())
+          .toUri();
+
+      return ResponseEntity.created(location).body(newUser);
+    }
+  
 
   @PutMapping("/{userId}")
-  public ResponseEntity putMethodName(
+  public ResponseEntity updateUser(
       @PathVariable long userId,
       @RequestBody UpdateUserRequest request) {
     

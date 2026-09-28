@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import airline.dto.CreateUserRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
+import airline.entity.enums.UserRole;
 import airline.error.ResourceNotFoundException;
 import airline.repository.UserRepository;
 import airline.service.UserService;
@@ -16,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 public class UserImp implements UserService {
 
-  private String USERNOTFOUND = "User not found: ";
+  private static final String USERNOTFOUND = "User not found: ";
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -28,7 +29,7 @@ public class UserImp implements UserService {
 
   @Override
   public List<User> getAllUsers() {
-    return (List<User>) userRepository.findAll();
+    return userRepository.findAll();
   }
 
   @Override
@@ -55,7 +56,7 @@ public class UserImp implements UserService {
     newUser.setUsername(userRequest.getName());
     newUser.setUserEmail(userRequest.getEmail());
     newUser.setPassword(passwordEncoder.encode(userRequest.getPassword())); // hash password
-    newUser.setRole(userRequest.getRole());
+    newUser.setRole(UserRole.CLIENT);
 
     return userRepository.save(newUser);
   }
@@ -75,6 +76,19 @@ public class UserImp implements UserService {
   public void deleteUser(Long id) {
     User currentUser = getUserById(id);
     userRepository.delete(currentUser);
+  }
+
+  @Override
+  public User createAdmin(CreateUserRequest userRequest) {
+
+    User newUser = new User();
+
+    newUser.setUsername(userRequest.getName());
+    newUser.setUserEmail(userRequest.getEmail());
+    newUser.setPassword(passwordEncoder.encode(userRequest.getPassword())); // hash password
+    newUser.setRole(UserRole.ADMIN);
+
+    return userRepository.save(newUser);
   }
 
 }
