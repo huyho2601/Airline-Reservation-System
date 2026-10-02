@@ -68,6 +68,7 @@ public class UserController {
     return ResponseEntity.created(location).body(newUser);
   }
 
+  // TODO: change to @AuthenticationPrincipal after implementing spring security
   @PutMapping("/{userId}")
   public ResponseEntity updateUser(
       @PathVariable long userId,
