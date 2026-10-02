@@ -1,6 +1,11 @@
 package airline.controller;
 
 import airline.entity.Flight;
+import airline.entity.User;
+import airline.entity.enums.UserRole;
+import airline.error.ResourceNotFoundException;
+import airline.error.UnauthorizedUserException;
+import airline.repository.UserRepository;
 import airline.service.FlightService;
 import airline.dto.CreateFlightRequest;
 import airline.dto.UpdateFlightRequest;
@@ -18,24 +23,45 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/flight_service")
+@RequestMapping("/api/flight")
 public class FlightController {
 
   private FlightService flightService;
+  private UserRepository userRepository;
 
   // Constructor
-  public FlightController(FlightService flightService) {
+  public FlightController(FlightService flightService, UserRepository userRepository) {
     this.flightService = flightService;
+    this.userRepository = userRepository;
+  }
+
+  // Temporary solution to resolve user by ID
+  private User resolveUser(long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+    return user;
+  }
+  
+  // Temporary solution to check if the user is an admin
+  private void checkAdmin(User user) {
+    if (user.getRole() != UserRole.ADMIN) {
+      throw new UnauthorizedUserException("Access denied!");
+    }
   }
 
   // GET API -> Fetch all flights
-  @GetMapping("/allflights")
-  public List<Flight> getAllFlights() {
+  @GetMapping
+  public List<Flight> getAllFlights(@RequestHeader ("X-User-Id")  long userId) {
+
+    User user = resolveUser(userId);
+    checkAdmin(user);
+
     return flightService.getAllFlights();
   }
 
@@ -45,7 +71,12 @@ public class FlightController {
   }
 
   @PostMapping
-  public ResponseEntity<Flight> createFlight(@Valid @RequestBody CreateFlightRequest flight) {
+  public ResponseEntity<Flight> createFlight(
+    @Valid @RequestBody CreateFlightRequest flight,
+      @RequestHeader("X-User-Id") Long userId) {
+        
+    User user = resolveUser(userId);
+    checkAdmin(user);
 
     Flight newFlight = flightService.createFlight(flight);
 
@@ -59,7 +90,11 @@ public class FlightController {
 
   @PutMapping("/{flightNumber}")
   public ResponseEntity<Flight> updateFlight(@PathVariable String flightNumber,
+      @RequestHeader("X-User-Id") Long userId,
       @RequestBody UpdateFlightRequest newRequest) {
+
+    User user = resolveUser(userId);
+    checkAdmin(user);
 
     Flight updatedFlight = flightService.updateFlight(flightNumber, newRequest);
 
@@ -67,7 +102,12 @@ public class FlightController {
   }
   
   @DeleteMapping ("/{flightNumber}")
-  public ResponseEntity<String> deleteFlight(@PathVariable String flightNumber) {
+  public ResponseEntity<String> deleteFlight(
+    @PathVariable String flightNumber,
+      @RequestHeader("X-User-Id") Long userId) {
+
+    User user = resolveUser(userId);
+    checkAdmin(user);
 
     flightService.deleteFlight(flightNumber);
     
