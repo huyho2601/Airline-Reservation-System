@@ -1,9 +1,11 @@
 package airline.service.implementation;
 
-import airline.repository.FlightRepsitory;
+import airline.repository.FlightRepository;
+import airline.repository.SeatRepository;
 import airline.service.FlightService;
 import airline.error.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,26 +13,30 @@ import org.springframework.stereotype.Service;
 import airline.dto.UpdateFlightRequest;
 import airline.dto.CreateFlightRequest;
 import airline.entity.Flight;
+import airline.entity.Seat;
+import airline.entity.enums.SeatStatus;
 
 @Service 
 public class FlightImp implements FlightService {
 
-  private final FlightRepsitory flightRepsitory;
+  private final FlightRepository flightRepository;
+  private final SeatRepository seatRepository;
 
   // Constructor
-  public FlightImp(FlightRepsitory flightRepsitory) {
-    this.flightRepsitory = flightRepsitory;
+  public FlightImp(FlightRepository flightRepository, SeatRepository seatRepository) {
+    this.flightRepository = flightRepository;
+    this.seatRepository = seatRepository;
   }
   
   // Main lofic
   @Override
   public List<Flight> getAllFlights() {
-    return (List<Flight>) flightRepsitory.findAll();
+    return (List<Flight>) flightRepository.findAll();
   }
 
   @Override
   public Flight getFlightByFlightNumber(String flightNumber) {
-    Flight flight = flightRepsitory.findByFlightNumber(flightNumber)
+    Flight flight = flightRepository.findByFlightNumber(flightNumber)
         .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
     return flight;
   }
@@ -39,11 +45,11 @@ public class FlightImp implements FlightService {
   public Flight createFlight(CreateFlightRequest createRequest) {
 
     // Check for duplicate
-    if (flightRepsitory.existsByFlightNumber(createRequest.getFlightNumber())) {
+    if (flightRepository.existsByFlightNumber(createRequest.getFlightNumber())) {
       throw new DuplicateResourceException(
           "Flight already exists: " + createRequest.getFlightNumber());
     }
-    
+
     // Create new flight instance
     Flight newFlight = new Flight();
     newFlight.setFlightNumber(createRequest.getFlightNumber());
@@ -54,14 +60,50 @@ public class FlightImp implements FlightService {
     newFlight.setPrice(createRequest.getPrice());
     newFlight.setTotalSeats(createRequest.getTotalSeats());
 
-    return flightRepsitory.save(newFlight);
+    Flight savedFlight = flightRepository.save(newFlight);
+
+    // Populate seats for the flight
+    List<Seat> seatList = populateSeatsForFlight(newFlight.getTotalSeats(), savedFlight);
+
+    seatRepository.saveAll(seatList);
+    return savedFlight;
   }
+  
+  private List<Seat> populateSeatsForFlight(int totalSeats, Flight flight) {
+    List<Seat> seatList = new ArrayList<>();
+    String[] letters = { "A", "B", "C", "D", "E", "F" };
+    int col = 0;
+    int row = 1;
+    for (int i = 1; i <= totalSeats; i++) {
+      if (col >= letters.length) {
+        col = 0;
+        row++;
+      }
+      String seatNumber = letters[col] + row;
+      Seat seat = new Seat(seatNumber, SeatStatus.AVAILABLE, flight);
+      col++;
+      seatList.add(seat);
+    }
+    return seatList;
+  }
+
+  // @Override
+  // public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
+
+  //   // // Check if the flight already existed
+  //   //   seat.setFlight(flight);
+  //   //   flight.addSeat(seat);
+    
+  //   // return flight.getSeats();
+
+  //   return null;
+  // }
 
   @Override
   public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
 
     // Check if the flight already existed
-    Flight existingFlight = flightRepsitory.findByFlightNumber(flightNumber)
+    Flight existingFlight = flightRepository.findByFlightNumber(flightNumber)
         .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
 
     existingFlight.setArrivalTime(request.getArrivalTime());
@@ -70,13 +112,13 @@ public class FlightImp implements FlightService {
     existingFlight.setDestination(request.getDestination());
     existingFlight.setPrice(request.getPrice());
 
-    return flightRepsitory.save(existingFlight);
+    return flightRepository.save(existingFlight);
   }
 
   @Override
   public void deleteFlight(String flightNumber) {
     Flight flight = getFlightByFlightNumber(flightNumber);
 
-    flightRepsitory.delete(flight);
+    flightRepository.delete(flight);
   }
 }
