@@ -1,7 +1,5 @@
 package airline.dto;
 
-import airline.entity.enums.UserRole;
-
 public class CreateUserRequest {
 
   private String name;
@@ -9,7 +7,6 @@ public class CreateUserRequest {
   private String email;
 
     // Constructor
-
     public CreateUserRequest(String name, String password, String email) {
       this.name = name;
       this.password = password;

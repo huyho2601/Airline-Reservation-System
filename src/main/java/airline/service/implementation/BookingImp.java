@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import airline.dto.CreateBookingRequest;
 import airline.entity.Booking;
@@ -36,16 +37,17 @@ public class BookingImp implements BookingService {
     this.userRepository = userRepository;
   }
 
+  // TODO: @AuthenticationPrincipal
   @Override
-  public List<Booking> getAllBookings(long adminId) {
+  public List<Booking> getAllBookings() {
 
-    // Authenticate admin
-    User user = userRepository.findById(adminId).
-        orElseThrow(() -> new ResourceNotFoundException("User not found: " + adminId));
+    // // Authenticate admin
+    // User user = userRepository.findById(adminId).
+    //     orElseThrow(() -> new ResourceNotFoundException("User not found: " + adminId));
       
-      if (user.getRole() != UserRole.ADMIN) {
-      throw new AccessDeniedException("Not admin");
-    }
+    //   if (user.getRole() != UserRole.ADMIN) {
+    //   throw new AccessDeniedException("Not admin");
+    // }
 
     return bookingRepository.findAll();
   }
@@ -70,9 +72,10 @@ public class BookingImp implements BookingService {
   // 4: When creating the booking, status should be AVAILABLE
   // Stay alet with race condition: when 2 or more clients book a same seat at a same time
 
-  @Override
+  @Transactional
+  @Override 
   public Booking createBooking(CreateBookingRequest request, User user) {
-     
+
     // 2 - Retrieve seat by id
     Seat seat = seatRepository.findById(request.getSeatId())
         .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + request.getSeatId()));
@@ -85,10 +88,12 @@ public class BookingImp implements BookingService {
     Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
 
     seat.setStatus(SeatStatus.BOOKED); // Set seat to booked
+    seatRepository.save(seat);
 
     return bookingRepository.save(booking);
   }
 
+  @Transactional 
   @Override
   public Booking updateSeatBooking(long bookingId, long seatId, User currentUser) {
 

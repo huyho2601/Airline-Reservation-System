@@ -7,7 +7,7 @@ import airline.entity.User;
 import java.util.List;
 
 public interface BookingService {
-  List<Booking> getAllBookings(long adminId);
+  List<Booking> getAllBookings();
 
   // get booking by id and userName
   public Booking getBooking(long id, User user);
