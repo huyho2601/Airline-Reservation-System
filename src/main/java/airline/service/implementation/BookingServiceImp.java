@@ -2,7 +2,6 @@ package airline.service.implementation;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,10 @@ import airline.error.SeatUnavailableException;
 import airline.repository.BookingRepository;
 import airline.repository.FlightRepository;
 import airline.repository.SeatRepository;
-import airline.repository.UserRepository;
 import airline.service.BookingService;
 
 @Service
 public class BookingServiceImp implements BookingService {
-
-  private String USERNOTFOUND = "User not found: ";
 
   private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
