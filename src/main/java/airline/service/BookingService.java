@@ -14,7 +14,7 @@ public interface BookingService {
 
   public Booking createBooking(CreateBookingRequest request, User user);
 
-  public Booking updateSeatBooking(long bookingId, long seatId, User currentUser);
+  public Booking updateSeatBooking(long bookingId, String seatNumber, User currentUser);
   
   public void deleteBooking(long id, User currentUser);
 }

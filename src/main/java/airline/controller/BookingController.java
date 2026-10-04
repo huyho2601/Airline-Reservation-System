@@ -27,7 +27,7 @@ import airline.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/booking_service")
+@RequestMapping("/api/bookings")
 public class BookingController {
   
   private BookingService bookingService;
@@ -61,7 +61,7 @@ public class BookingController {
   }
 
   // TODO: implement @AuthenticationPrincipal later (@AuthenticationPrincipal User urrentUser)
-  @GetMapping("/{userId}")
+  @GetMapping("/{bookingId}")
   public Booking getBookingById(
     @PathVariable long bookingId,
     @RequestHeader ("X-User-Id")  Long userId) {

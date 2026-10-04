@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import airline.dto.CreateBookingRequest;
 import airline.entity.Booking;
+import airline.entity.Flight;
 import airline.entity.Seat;
 import airline.entity.User;
 import airline.entity.enums.BookingStatus;
@@ -18,6 +19,7 @@ import airline.entity.enums.UserRole;
 import airline.error.ResourceNotFoundException;
 import airline.error.SeatUnavailableException;
 import airline.repository.BookingRepository;
+import airline.repository.FlightRepository;
 import airline.repository.SeatRepository;
 import airline.repository.UserRepository;
 import airline.service.BookingService;
@@ -29,41 +31,28 @@ public class BookingServiceImp implements BookingService {
 
   private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
-  private final UserRepository userRepository;
-
+  private final FlightRepository flightRepository;
+ 
   public BookingServiceImp(BookingRepository bookingRepository, SeatRepository seatRepository,
-      UserRepository userRepository) {
+      FlightRepository flightRepository) {
     this.bookingRepository = bookingRepository;
     this.seatRepository = seatRepository;
-    this.userRepository = userRepository;
+    this.flightRepository = flightRepository;
   }
 
   // TODO: @AuthenticationPrincipal
   @Override
   public List<Booking> getAllBookings() {
-
-    // // Authenticate admin
-    // User user = userRepository.findById(adminId).
-    // orElseThrow(() -> new ResourceNotFoundException("User not found: " +
-    // adminId));
-
-    // if (user.getRole() != UserRole.ADMIN) {
-    // throw new AccessDeniedException("Not admin");
-    // }
-
     return bookingRepository.findAll();
   }
 
   @Override
   public Booking getBooking(long id, User user) {
-
     // Authenticate user
     Booking booking = bookingRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + id));
 
-    if (booking.getUser().getId() != user.getId()) {
-      throw new AccessDeniedException("Not your booking");
-    }
+    checkOwnerOrAdmin(booking, user);
 
     return booking;
   }
@@ -80,47 +69,46 @@ public class BookingServiceImp implements BookingService {
   @Override
   public Booking createBooking(CreateBookingRequest request, User user) {
 
-    // 2 - Retrieve seat by id
-    Seat seat = seatRepository.findById(request.getSeatId())
-        .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + request.getSeatId()));
+    // 2 - Retrieve seat by seat number and flight number
+    Flight flight = flightRepository.findByFlightNumber(request.flightNumber())
+        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + request.flightNumber()));
+
+    Seat seat = findSeat(flight, request.seatNumber());
 
     // 4
     if (seat.getStatus() != SeatStatus.AVAILABLE) {
       throw new SeatUnavailableException("Seat is not available: " + seat.getId());
     }
 
-    Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
-
     seat.setStatus(SeatStatus.BOOKED); // Set seat to booked
     seatRepository.save(seat);
+
+    Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
 
     return bookingRepository.save(booking);
   }
 
   @Transactional
   @Override
-  public Booking updateSeatBooking(long bookingId, long seatId, User currentUser) {
+  public Booking updateSeatBooking(long bookingId, String seatNumber, User currentUser) {
 
     // Retrieve existing booking and seat
-    Booking existingBooking = bookingRepository.findById(bookingId)
-        .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
-    Seat existingSeat = existingBooking.getSeat();
+    Booking existingBooking = getBooking(bookingId, currentUser);
+    Seat oldSeat = existingBooking.getSeat();
 
     // Authenticate user
-    if (existingBooking.getUser().getId() != currentUser.getId() && currentUser.getRole() != UserRole.ADMIN) {
-      throw new AccessDeniedException("Not your booking");
-    }
+    checkOwnerOrAdmin(existingBooking, currentUser);
 
     // Retrieve new seat and check for availability
-    Seat newSeat = seatRepository.findById(seatId)
-        .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + seatId));
+    Flight flight = oldSeat.getFlight();
+    Seat newSeat = findSeat(flight, seatNumber);
 
     if (newSeat.getStatus() == SeatStatus.AVAILABLE) {
       existingBooking.setSeat(newSeat);
       newSeat.setStatus(SeatStatus.BOOKED);
-      existingSeat.setStatus(SeatStatus.AVAILABLE);
+      oldSeat.setStatus(SeatStatus.AVAILABLE);
     } else {
-      throw new SeatUnavailableException("Seat is not available: " + newSeat.getId());
+      throw new SeatUnavailableException("Seat is not available: " + newSeat.getSeatNumber());
     }
 
     return bookingRepository.save(existingBooking);
@@ -128,6 +116,7 @@ public class BookingServiceImp implements BookingService {
 
   // Cancel booking
   @Override
+  @Transactional
   public void deleteBooking(long id, User currentUser) {
 
     // Retrieve the booking
@@ -138,6 +127,23 @@ public class BookingServiceImp implements BookingService {
     seat.setStatus(SeatStatus.AVAILABLE);
 
     bookingRepository.delete(booking);
+  }
+
+  // Helper
+
+  private Seat findSeat(Flight flight, String seatNumber) {
+    Seat seat = seatRepository.findByFlightAndSeatNumber(flight, seatNumber)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Seat not found for flight: " + flight.getFlightNumber() + ", seat number: " + seatNumber));
+    return seat;  
+  }
+
+  private void checkOwnerOrAdmin(Booking booking, User currentUser) {
+    boolean isOwner = booking.getUser().getId() == currentUser.getId();
+
+    if(!isOwner && currentUser.getRole() != UserRole.ADMIN) {
+      throw new AccessDeniedException("Not your booking");
+    }
   }
 
 }
