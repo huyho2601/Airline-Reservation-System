@@ -9,7 +9,7 @@ import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.service.UserService;
-import airline.service.implementation.UserImp;
+import airline.service.implementation.UserServiceImp;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -81,10 +81,10 @@ public class UserController {
 
   @PutMapping("/{userId}/password")
   public ResponseEntity<Void> changePassword(
-          @PathVariable long userId,
-          @Valid @RequestBody PasswordChangeRequest request) {
-      userService.updateUserPassword(userId, request);
-      return ResponseEntity.noContent().build();
+      @PathVariable long userId,
+      @Valid @RequestBody PasswordChangeRequest request) {
+    userService.updateUserPassword(userId, request);
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/{userId}")

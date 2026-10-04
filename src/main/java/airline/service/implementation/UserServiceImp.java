@@ -18,14 +18,14 @@ import airline.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
-public class UserImp implements UserService {
+public class UserServiceImp implements UserService {
 
   private static final String USERNOTFOUND = "User not found: ";
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public UserImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }
@@ -65,7 +65,7 @@ public class UserImp implements UserService {
   }
 
   @Override
-  @Transactional 
+  @Transactional
   public User updateUser(long userId, UpdateUserRequest request) {
     User curentUser = getUserById(userId);
 
@@ -75,9 +75,8 @@ public class UserImp implements UserService {
     return userRepository.save(curentUser);
   }
 
-  @Override 
-  public User updateUserPassword(long userId, PasswordChangeRequest request)
-  {
+  @Override
+  public User updateUserPassword(long userId, PasswordChangeRequest request) {
     User currentUser = getUserById(userId);
 
     String currentHashedPassword = currentUser.getPassword();

@@ -16,18 +16,18 @@ import airline.entity.Flight;
 import airline.entity.Seat;
 import airline.entity.enums.SeatStatus;
 
-@Service 
-public class FlightImp implements FlightService {
+@Service
+public class FlightServiceImp implements FlightService {
 
   private final FlightRepository flightRepository;
   private final SeatRepository seatRepository;
 
   // Constructor
-  public FlightImp(FlightRepository flightRepository, SeatRepository seatRepository) {
+  public FlightServiceImp(FlightRepository flightRepository, SeatRepository seatRepository) {
     this.flightRepository = flightRepository;
     this.seatRepository = seatRepository;
   }
-  
+
   // Main lofic
   @Override
   public List<Flight> getAllFlights() {
@@ -68,7 +68,7 @@ public class FlightImp implements FlightService {
     seatRepository.saveAll(seatList);
     return savedFlight;
   }
-  
+
   private List<Seat> populateSeatsForFlight(int totalSeats, Flight flight) {
     List<Seat> seatList = new ArrayList<>();
     String[] letters = { "A", "B", "C", "D", "E", "F" };
@@ -88,15 +88,16 @@ public class FlightImp implements FlightService {
   }
 
   // @Override
-  // public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
+  // public Flight updateFlight(String flightNumber, UpdateFlightRequest request)
+  // {
 
-  //   // // Check if the flight already existed
-  //   //   seat.setFlight(flight);
-  //   //   flight.addSeat(seat);
-    
-  //   // return flight.getSeats();
+  // // // Check if the flight already existed
+  // // seat.setFlight(flight);
+  // // flight.addSeat(seat);
 
-  //   return null;
+  // // return flight.getSeats();
+
+  // return null;
   // }
 
   @Override

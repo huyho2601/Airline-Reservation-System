@@ -22,8 +22,8 @@ import airline.repository.SeatRepository;
 import airline.repository.UserRepository;
 import airline.service.BookingService;
 
-@Service 
-public class BookingImp implements BookingService {
+@Service
+public class BookingServiceImp implements BookingService {
 
   private String USERNOTFOUND = "User not found: ";
 
@@ -31,7 +31,8 @@ public class BookingImp implements BookingService {
   private final SeatRepository seatRepository;
   private final UserRepository userRepository;
 
-  public BookingImp(BookingRepository bookingRepository, SeatRepository seatRepository, UserRepository userRepository) {
+  public BookingServiceImp(BookingRepository bookingRepository, SeatRepository seatRepository,
+      UserRepository userRepository) {
     this.bookingRepository = bookingRepository;
     this.seatRepository = seatRepository;
     this.userRepository = userRepository;
@@ -43,10 +44,11 @@ public class BookingImp implements BookingService {
 
     // // Authenticate admin
     // User user = userRepository.findById(adminId).
-    //     orElseThrow(() -> new ResourceNotFoundException("User not found: " + adminId));
-      
-    //   if (user.getRole() != UserRole.ADMIN) {
-    //   throw new AccessDeniedException("Not admin");
+    // orElseThrow(() -> new ResourceNotFoundException("User not found: " +
+    // adminId));
+
+    // if (user.getRole() != UserRole.ADMIN) {
+    // throw new AccessDeniedException("Not admin");
     // }
 
     return bookingRepository.findAll();
@@ -65,15 +67,17 @@ public class BookingImp implements BookingService {
 
     return booking;
   }
-  
-  // 1: User should not be able to send id himself, this should come from the Spring Security (authentication concern)
+
+  // 1: User should not be able to send id himself, this should come from the
+  // Spring Security (authentication concern)
   // 2: Seat should not be sent as object. Retrieve seat by its id
   // 3: Booking time should be .now()
   // 4: When creating the booking, status should be AVAILABLE
-  // Stay alet with race condition: when 2 or more clients book a same seat at a same time
+  // Stay alet with race condition: when 2 or more clients book a same seat at a
+  // same time
 
   @Transactional
-  @Override 
+  @Override
   public Booking createBooking(CreateBookingRequest request, User user) {
 
     // 2 - Retrieve seat by id
@@ -93,13 +97,13 @@ public class BookingImp implements BookingService {
     return bookingRepository.save(booking);
   }
 
-  @Transactional 
+  @Transactional
   @Override
   public Booking updateSeatBooking(long bookingId, long seatId, User currentUser) {
 
     // Retrieve existing booking and seat
     Booking existingBooking = bookingRepository.findById(bookingId)
-    .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+        .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
     Seat existingSeat = existingBooking.getSeat();
 
     // Authenticate user
@@ -125,7 +129,7 @@ public class BookingImp implements BookingService {
   // Cancel booking
   @Override
   public void deleteBooking(long id, User currentUser) {
-    
+
     // Retrieve the booking
     Booking booking = getBooking(id, currentUser);
 

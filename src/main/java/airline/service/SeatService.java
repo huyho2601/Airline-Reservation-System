@@ -1,23 +1,18 @@
 package airline.service;
 
-import airline.dto.CreateSeatRequest;
 import airline.entity.Seat;
 import java.util.List;
 
 public interface SeatService {
-  List<Seat> getAllSeats(Long flightId);
+  List<Seat> getAllSeats(String flightNumber);
 
-  List<Seat> getAvailableSeats(Long flightId);
+  List<Seat> getAvailableSeats(String flightNumber);
 
-  Seat getSeatByIdAndFlightId(Long id, Long flightId);
+  Seat getSeat(String flightNumber, String seatNumber);
 
-  // public Seat createSeat(CreateSeatRequest createRequest, Long flightId);
+  Seat reserveSeat(String flightNumber, String seatNumber);
 
-  Seat updateSeat(Seat seat, Long flightId);
+  Seat cancelSeatReservation(String flightNumber, String seatNumber);
 
-  Seat reserveSeat(Long seatId);
-
-  Seat cancelSeatReservation(Long seatId);
-
-  void deleteSeat(Long id, Long flightId);
+  void deleteSeat(String flightNumber, String seatNumber);
 }
