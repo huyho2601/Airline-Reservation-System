@@ -79,9 +79,6 @@ public class UserServiceImp implements UserService {
   public User updateUserPassword(long userId, PasswordChangeRequest request) {
     User currentUser = getUserById(userId);
 
-    String currentHashedPassword = currentUser.getPassword();
-    String inputPassword = request.currentPassword();
-
     if (!passwordEncoder.matches(request.currentPassword(), currentUser.getPassword())) {
       throw new InvalidCredentialsException("Password not matched");
     }
