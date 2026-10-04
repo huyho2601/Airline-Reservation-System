@@ -82,7 +82,7 @@ public class UserServiceImp implements UserService {
     String currentHashedPassword = currentUser.getPassword();
     String inputPassword = request.currentPassword();
 
-    if (!passwordEncoder.encode(inputPassword).matches(currentHashedPassword)) {
+    if (!passwordEncoder.matches(request.currentPassword(), currentUser.getPassword())) {
       throw new InvalidCredentialsException("Password not matched");
     }
 
