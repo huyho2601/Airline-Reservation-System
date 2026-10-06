@@ -66,8 +66,7 @@ public class BookingServiceImp implements BookingService {
   public Booking createBooking(CreateBookingRequest request, User user) {
 
     // 2 - Retrieve seat by seat number and flight number
-    Flight flight = flightRepository.findByFlightNumber(request.flightNumber())
-        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + request.flightNumber()));
+    Flight flight = findFlight(request.flightNumber());
 
     Seat seat = findSeat(flight, request.seatNumber());
 
@@ -126,6 +125,11 @@ public class BookingServiceImp implements BookingService {
   }
 
   // Helper
+
+  private Flight findFlight(String flightNumber) {
+    return flightRepository.findByFlightNumber(flightNumber)
+        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
+  }
 
   private Seat findSeat(Flight flight, String seatNumber) {
     Seat seat = seatRepository.findByFlightAndSeatNumber(flight, seatNumber)
