@@ -43,21 +43,21 @@ public class SeatController {
     return seatService.getSeat(flightNumber, seatNumber);
   }
 
-  // POST /api/flights/KL1234/seats/12A/reservation
-  @PostMapping("/{seatNumber}/reservation")
-  public Seat reserveSeat(
-    @PathVariable String flightNumber,
-        @PathVariable String seatNumber) {
-    return seatService.reserveSeat(flightNumber, seatNumber);
-  }
+  // // POST /api/flights/KL1234/seats/12A/reservation
+  // @PostMapping("/{seatNumber}/reservation")
+  // public Seat reserveSeat(
+  //   @PathVariable String flightNumber,
+  //       @PathVariable String seatNumber) {
+  //   return seatService.reserveSeat(flightNumber, seatNumber);
+  // }
 
-  // DELETE /api/flights/KL1234/seats/12A/reservation
-  @DeleteMapping("/{seatNumber}/reservation")
-  public Seat cancelReservation(
-    @PathVariable String flightNumber,
-        @PathVariable String seatNumber) {
-    return seatService.cancelSeatReservation(flightNumber, seatNumber);
-  }
+  // // DELETE /api/flights/KL1234/seats/12A/reservation
+  // @DeleteMapping("/{seatNumber}/reservation")
+  // public Seat cancelReservation(
+  //   @PathVariable String flightNumber,
+  //       @PathVariable String seatNumber) {
+  //   return seatService.cancelSeatReservation(flightNumber, seatNumber);
+  // }
 
   // DELETE /api/flights/KL1234/seats/12A
   @DeleteMapping("/{seatNumber}")

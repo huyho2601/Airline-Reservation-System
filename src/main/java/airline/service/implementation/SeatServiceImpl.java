@@ -45,6 +45,7 @@ public class SeatServiceImpl implements SeatService {
 
   // Writes 
   
+  // Seat reservations needs timer. Now, its endpoints are disabled until timer is implemented. 
   @Override
   @Transactional
   public Seat reserveSeat(String flightNumber, String seatNumber) {
