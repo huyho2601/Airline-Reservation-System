@@ -52,6 +52,7 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
+  @Transactional 
   public User createUser(CreateUserRequest userRequest) {
 
     User newUser = new User();
@@ -76,6 +77,7 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
+  @Transactional
   public User updateUserPassword(long userId, PasswordChangeRequest request) {
     User currentUser = getUserById(userId);
 
@@ -89,12 +91,14 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
+  @Transactional
   public void deleteUser(Long id) {
     User currentUser = getUserById(id);
     userRepository.delete(currentUser);
   }
 
   @Override
+  @Transactional 
   public User createAdmin(CreateUserRequest userRequest) {
 
     User newUser = new User();

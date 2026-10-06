@@ -8,6 +8,7 @@ import airline.dto.CreateUserRequest;
 import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
+import airline.entity.enums.UserRole;
 import airline.service.UserService;
 import airline.service.implementation.UserServiceImp;
 import jakarta.validation.Valid;
@@ -17,15 +18,17 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/api/user_service")
+@RequestMapping("/api/users")
 public class UserController {
 
   private UserService userService;
@@ -34,11 +37,14 @@ public class UserController {
     this.userService = userService;
   }
 
-  @GetMapping("/all_users")
-  public List<User> getAllUsers() {
+  // Admin only
+  @GetMapping
+  public List<User> getAllUsers(@RequestHeader("X-User-Id") long userId) {
+    requireAdmin(userId);
     return userService.getAllUsers();
   }
 
+  // User
   @GetMapping("/{userId}")
   public User getUserById(@PathVariable long userId) {
     return userService.getUserById(userId);
@@ -90,8 +96,17 @@ public class UserController {
   @DeleteMapping("/{userId}")
   public ResponseEntity deleteUser(@PathVariable long userId) {
     userService.deleteUser(userId);
-
     return new ResponseEntity<>("Deleted sucessfully", HttpStatus.OK);
   }
+
+  // Temporary: replace with @AuthenticationPrincipal once Spring Security is set up
+  private User requireAdmin(long userId) {
+    User user = userService.getUserById(userId);
+    if (user.getRole() != UserRole.ADMIN) {
+      throw new AccessDeniedException("Admin access required");
+    }
+    return user;
+  }
+
 
 }
