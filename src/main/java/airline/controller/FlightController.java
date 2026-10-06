@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/api/flight")
+@RequestMapping("/api/flights")
 public class FlightController {
 
   private FlightService flightService;
@@ -73,7 +73,7 @@ public class FlightController {
   @PostMapping
   public ResponseEntity<Flight> createFlight(
     @Valid @RequestBody CreateFlightRequest flight,
-      @RequestHeader("X-User-Id") Long userId) {
+      @RequestHeader("X-User-Id") long userId) {
         
     User user = resolveUser(userId);
     checkAdmin(user);
@@ -90,7 +90,7 @@ public class FlightController {
 
   @PutMapping("/{flightNumber}")
   public ResponseEntity<Flight> updateFlight(@PathVariable String flightNumber,
-      @RequestHeader("X-User-Id") Long userId,
+      @RequestHeader("X-User-Id") long userId,
       @RequestBody UpdateFlightRequest newRequest) {
 
     User user = resolveUser(userId);
@@ -104,7 +104,7 @@ public class FlightController {
   @DeleteMapping ("/{flightNumber}")
   public ResponseEntity<String> deleteFlight(
     @PathVariable String flightNumber,
-      @RequestHeader("X-User-Id") Long userId) {
+      @RequestHeader("X-User-Id") long userId) {
 
     User user = resolveUser(userId);
     checkAdmin(user);

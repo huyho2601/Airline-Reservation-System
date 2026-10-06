@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import airline.dto.UpdateFlightRequest;
 import airline.dto.CreateFlightRequest;
@@ -42,6 +43,7 @@ public class FlightServiceImp implements FlightService {
   }
 
   @Override
+  @Transactional 
   public Flight createFlight(CreateFlightRequest createRequest) {
 
     // Check for duplicate
@@ -87,25 +89,13 @@ public class FlightServiceImp implements FlightService {
     return seatList;
   }
 
-  // @Override
-  // public Flight updateFlight(String flightNumber, UpdateFlightRequest request)
-  // {
-
-  // // // Check if the flight already existed
-  // // seat.setFlight(flight);
-  // // flight.addSeat(seat);
-
-  // // return flight.getSeats();
-
-  // return null;
-  // }
 
   @Override
+  @Transactional
   public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
 
     // Check if the flight already existed
-    Flight existingFlight = flightRepository.findByFlightNumber(flightNumber)
-        .orElseThrow(() -> new ResourceNotFoundException("Flight not found: " + flightNumber));
+    Flight existingFlight = getFlightByFlightNumber(flightNumber);
 
     existingFlight.setArrivalTime(request.getArrivalTime());
     existingFlight.setDepartureTime(request.getDepartureTime());
@@ -117,6 +107,7 @@ public class FlightServiceImp implements FlightService {
   }
 
   @Override
+  @Transactional 
   public void deleteFlight(String flightNumber) {
     Flight flight = getFlightByFlightNumber(flightNumber);
 
