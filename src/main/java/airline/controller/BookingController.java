@@ -100,6 +100,7 @@ public class BookingController {
   // Temporary helper: check admin
   private User requireAdmin(long userId) {
     User user = userService.getUserById(userId);
+    // printl("User role: " + user.getRole());
     if (user.getRole() != UserRole.ADMIN) {
       throw new AccessDeniedException("Admin access required");
     }
