@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import airline.dto.UpdateFlightRequest;
 import airline.dto.CreateFlightRequest;
+import airline.dto.SearchFlightRequest;
 import airline.entity.Flight;
 import airline.entity.Seat;
 import airline.entity.enums.SeatStatus;
@@ -43,7 +44,7 @@ public class FlightServiceImp implements FlightService {
   }
 
   @Override
-  @Transactional 
+  @Transactional
   public Flight createFlight(CreateFlightRequest createRequest) {
 
     // Check for duplicate
@@ -89,7 +90,6 @@ public class FlightServiceImp implements FlightService {
     return seatList;
   }
 
-
   @Override
   @Transactional
   public Flight updateFlight(String flightNumber, UpdateFlightRequest request) {
@@ -107,10 +107,20 @@ public class FlightServiceImp implements FlightService {
   }
 
   @Override
-  @Transactional 
+  @Transactional
   public void deleteFlight(String flightNumber) {
     Flight flight = getFlightByFlightNumber(flightNumber);
 
     flightRepository.delete(flight);
+  }
+
+  @Override
+  public Flight searchFlight(SearchFlightRequest searchRequest) {
+    return flightRepository.findByOriginIgnoreCaseAndDestinationIgnoreCaseAndDepartureTimeBetween(
+        searchRequest.origin(),
+        searchRequest.destination(),
+        searchRequest.start(),
+        searchRequest.end())
+        .orElseThrow(() -> new ResourceNotFoundException("Flight not found for the given criteria."));
   }
 }

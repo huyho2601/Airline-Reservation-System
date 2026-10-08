@@ -8,13 +8,17 @@ import airline.error.UnauthorizedUserException;
 import airline.repository.UserRepository;
 import airline.service.FlightService;
 import airline.dto.CreateFlightRequest;
+import airline.dto.SearchFlightRequest;
 import airline.dto.UpdateFlightRequest;
 import jakarta.validation.Valid;
 
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/flights")
@@ -69,6 +75,18 @@ public class FlightController {
   public Flight getFlightByFlightNumber(@PathVariable String flightNumber) {
     return flightService.getFlightByFlightNumber(flightNumber);
   }
+  
+  @GetMapping("/search")
+  public Flight searchForFlights(
+    @RequestParam String origin,
+      @RequestParam String destination,
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate date) {
+    LocalDateTime departureDateStart = date.atStartOfDay();
+    LocalDateTime departureDateEnd = date.atTime(23, 59, 59);
+    SearchFlightRequest searchRequest = new SearchFlightRequest(origin, destination, departureDateStart, departureDateEnd);
+      return flightService.searchFlight(searchRequest);
+  }
+  
 
   @PostMapping
   public ResponseEntity<Flight> createFlight(

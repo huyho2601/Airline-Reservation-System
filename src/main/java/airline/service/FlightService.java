@@ -2,6 +2,7 @@ package airline.service;
 
 import airline.dto.UpdateFlightRequest;
 import airline.dto.CreateFlightRequest;
+import airline.dto.SearchFlightRequest;
 import airline.entity.Flight;
 import java.util.List;
 
@@ -9,6 +10,8 @@ public interface FlightService {
   List<Flight> getAllFlights();
 
   Flight getFlightByFlightNumber(String flightNumber);
+
+  Flight searchFlight(SearchFlightRequest searchRequest);
 
   Flight createFlight(CreateFlightRequest flight);
   
