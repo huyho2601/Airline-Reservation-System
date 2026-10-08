@@ -3,25 +3,34 @@ package airline.dto;
 public class CreateUserRequest {
 
   private String name;
+  private String username;
   private String password;
   private String email;
 
-    // Constructor
-    public CreateUserRequest(String name, String password, String email) {
-      this.name = name;
-      this.password = password;
-      this.email = email;
-    }
+  // Constructor
+  public CreateUserRequest(String name, String username, String password, String email) {
+    this.name = name;
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
     
 
-    // Getters and Setters
-
+  // Getters and Setters
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public String getPassword() {
