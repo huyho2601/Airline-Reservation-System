@@ -77,7 +77,7 @@ public class FlightController {
   }
   
   @GetMapping("/search")
-  public Flight searchForFlights(
+  public List<Flight> searchForFlights(
     @RequestParam String origin,
       @RequestParam String destination,
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate date) {

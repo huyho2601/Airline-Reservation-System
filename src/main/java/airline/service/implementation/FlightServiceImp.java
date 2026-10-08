@@ -115,12 +115,11 @@ public class FlightServiceImp implements FlightService {
   }
 
   @Override
-  public Flight searchFlight(SearchFlightRequest searchRequest) {
+  public List<Flight> searchFlight(SearchFlightRequest searchRequest) {
     return flightRepository.findByOriginIgnoreCaseAndDestinationIgnoreCaseAndDepartureTimeBetween(
         searchRequest.origin(),
         searchRequest.destination(),
         searchRequest.start(),
-        searchRequest.end())
-        .orElseThrow(() -> new ResourceNotFoundException("Flight not found for the given criteria."));
+        searchRequest.end());
   }
 }

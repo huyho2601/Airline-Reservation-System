@@ -11,7 +11,7 @@ public interface FlightService {
 
   Flight getFlightByFlightNumber(String flightNumber);
 
-  Flight searchFlight(SearchFlightRequest searchRequest);
+  List<Flight> searchFlight(SearchFlightRequest searchRequest);
 
   Flight createFlight(CreateFlightRequest flight);
   
