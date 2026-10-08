@@ -67,10 +67,21 @@ public class BookingServiceImp implements BookingService {
 
     // 2 - Retrieve seat by seat number and flight number
     Flight flight = findFlight(request.flightNumber());
-
     Seat seat = findSeat(flight, request.seatNumber());
 
-    // 4
+    // Validate flight and seat existence
+    if (flight == null) {
+      throw new ResourceNotFoundException("Flight not found: " + request.flightNumber());
+    }
+
+    if (seat == null) {
+      throw new ResourceNotFoundException("Seat not found: " + request.seatNumber());
+    }
+
+    // Validate flight availability
+    validateFlight(flight);
+
+    // 4: Validate seat availability
     if (seat.getStatus() != SeatStatus.AVAILABLE) {
       throw new SeatUnavailableException("Seat is not available: " + seat.getId());
     }
@@ -96,6 +107,10 @@ public class BookingServiceImp implements BookingService {
 
     // Retrieve new seat and check for availability
     Flight flight = oldSeat.getFlight();
+
+    // Validate flight availability
+    validateFlight(flight);
+
     Seat newSeat = findSeat(flight, seatNumber);
 
     if (newSeat.getStatus() == SeatStatus.AVAILABLE) {
@@ -141,8 +156,14 @@ public class BookingServiceImp implements BookingService {
   private void checkOwnerOrAdmin(Booking booking, User currentUser) {
     boolean isOwner = booking.getUser().getId() == currentUser.getId();
 
-    if(!isOwner && currentUser.getRole() != UserRole.ADMIN) {
+    if (!isOwner && currentUser.getRole() != UserRole.ADMIN) {
       throw new AccessDeniedException("Not your booking");
+    }
+  }
+  
+  private void validateFlight(Flight flight) {
+    if (flight.getDepartureTime().isBefore(LocalDateTime.now())) {
+      throw new ResourceNotFoundException("Flight has already departed: " + flight.getFlightNumber());
     }
   }
 
