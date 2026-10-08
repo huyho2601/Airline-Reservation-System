@@ -9,9 +9,11 @@ import java.util.List;
 public interface UserService {
   List<User> getAllUsers();
 
-  User getUserByName(String name);
+  User getUserByUserName(String username);
 
   User getUserById(long userId);
+
+  List<User> getUserByName(String name);
 
   public User createUser(CreateUserRequest user);
 

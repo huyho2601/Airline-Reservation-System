@@ -1,6 +1,7 @@
 package airline.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -42,6 +43,11 @@ public class UserController {
   public List<User> getAllUsers(@RequestHeader("X-User-Id") long userId) {
     requireAdmin(userId);
     return userService.getAllUsers();
+  }
+
+  @GetMapping("/search")
+  public List<User> getUsersByName(@RequestParam String name) {
+    return userService.getUserByName(name);
   }
 
   // User

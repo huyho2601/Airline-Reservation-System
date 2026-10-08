@@ -36,11 +36,16 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
-  public User getUserByName(String name) {
-    User user = userRepository.findByUsername(name)
-        .orElseThrow(() -> new ResourceNotFoundException(USERNOTFOUND + name));
+  public User getUserByUserName(String username) {
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException(USERNOTFOUND + username));
 
     return user;
+  }
+
+  @Override
+  public List<User> getUserByName(String name) {
+    return userRepository.findByNameContaining(name);
   }
 
   @Override
@@ -55,9 +60,16 @@ public class UserServiceImp implements UserService {
   @Transactional 
   public User createUser(CreateUserRequest userRequest) {
 
-    User newUser = new User();
+    // Check for duplicate
+    User testUser = getUserByUserName(userRequest.getUsername());
+    if (testUser != null) {
+      throw new InvalidCredentialsException("Username already exists: " + userRequest.getUsername());
+    }
 
-    newUser.setUsername(userRequest.getName());
+    // Create new user instance
+    User newUser = new User();
+    newUser.setName(userRequest.getName());
+    newUser.setUsername(userRequest.getUsername());
     newUser.setUserEmail(userRequest.getEmail());
     newUser.setPassword(passwordEncoder.encode(userRequest.getPassword())); // hash password
     newUser.setRole(UserRole.CLIENT);
@@ -102,8 +114,8 @@ public class UserServiceImp implements UserService {
   public User createAdmin(CreateUserRequest userRequest) {
 
     User newUser = new User();
-
-    newUser.setUsername(userRequest.getName());
+    newUser.setName(userRequest.getName());
+    newUser.setUsername(userRequest.getUsername());
     newUser.setUserEmail(userRequest.getEmail());
     newUser.setPassword(passwordEncoder.encode(userRequest.getPassword())); // hash password
     newUser.setRole(UserRole.ADMIN);

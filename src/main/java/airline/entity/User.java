@@ -13,14 +13,17 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "username", nullable = false)
+  @Column(name = "name", nullable = false)
+  private String name;
+
+  @Column(name = "username", nullable = false, unique = true)
   private String username;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private UserRole role;
 
-  @Column(name = "email", nullable = false)
+  @Column(name = "email", nullable = false, unique = true)
   private String userEmail;
 
   @JsonIgnore
@@ -47,7 +50,8 @@ public class User {
     this.password = password;
   }
 
-  public User(String username, UserRole role, String userEmail, String password) {
+  public User(String name, String username, UserRole role, String userEmail, String password) {
+    this.name = name;
     this.username = username;
     this.role = role;
     this.userEmail = userEmail;
@@ -61,6 +65,14 @@ public class User {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getUsername() {
