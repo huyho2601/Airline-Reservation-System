@@ -63,11 +63,7 @@ public class FlightController {
 
   // GET API -> Fetch all flights
   @GetMapping
-  public List<Flight> getAllFlights(@RequestHeader ("X-User-Id")  long userId) {
-
-    User user = resolveUser(userId);
-    checkAdmin(user);
-
+  public List<Flight> getAllFlights() {
     return flightService.getAllFlights();
   }
 
@@ -80,9 +76,10 @@ public class FlightController {
   public List<Flight> searchForFlights(
     @RequestParam String origin,
       @RequestParam String destination,
-      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate date) {
-    LocalDateTime departureDateStart = date.atStartOfDay();
-    LocalDateTime departureDateEnd = date.atTime(23, 59, 59);
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate fromDate,
+      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate toDate) {
+    LocalDateTime departureDateStart = fromDate.atStartOfDay();
+    LocalDateTime departureDateEnd = toDate.atTime(23, 59, 59);
     SearchFlightRequest searchRequest = new SearchFlightRequest(origin, destination, departureDateStart, departureDateEnd);
       return flightService.searchFlight(searchRequest);
   }
