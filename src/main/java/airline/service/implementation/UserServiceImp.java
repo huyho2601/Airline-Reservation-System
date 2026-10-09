@@ -61,10 +61,13 @@ public class UserServiceImp implements UserService {
   public User createUser(CreateUserRequest userRequest) {
 
     // Check for duplicate
-    User testUser = getUserByUserName(userRequest.getUsername());
-    if (testUser != null) {
+    if (userRepository.existsByUsername(userRequest.getUsername())) {
       throw new InvalidCredentialsException("Username already exists: " + userRequest.getUsername());
     }
+    if (userRepository.existsByUserEmail(userRequest.getEmail())) {
+      throw new InvalidCredentialsException("Email already exists: " + userRequest.getEmail());
+    }
+    
 
     // Create new user instance
     User newUser = new User();
