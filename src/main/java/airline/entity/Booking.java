@@ -21,7 +21,7 @@ public class Booking {
   private LocalDateTime bookingTime;
 
   @ManyToOne 
-  @JoinColumn(name = "seat_id", nullable = false)
+  @JoinColumn(name = "seat_id", nullable = false, unique = true)
   private Seat seat;
 
   @Enumerated (EnumType.STRING)
