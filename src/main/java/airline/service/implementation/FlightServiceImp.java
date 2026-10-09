@@ -111,6 +111,15 @@ public class FlightServiceImp implements FlightService {
   public void deleteFlight(String flightNumber) {
     Flight flight = getFlightByFlightNumber(flightNumber);
 
+    // Check if there are any booked seats for the flight
+    if (seatRepository.existsByFlightAndStatusNot(flight, SeatStatus.AVAILABLE)) {
+      throw new DeletionException(
+          "Cannot delete flight " + flightNumber + " because there are booked seats.");
+    }
+
+    // Delete all seats associated with the flight
+    seatRepository.deleteByFlight(flight);
+
     flightRepository.delete(flight);
   }
 

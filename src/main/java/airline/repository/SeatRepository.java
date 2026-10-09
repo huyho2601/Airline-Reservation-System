@@ -17,4 +17,8 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
   List<Seat> findByFlightAndStatus(Flight flight, SeatStatus status);
 
   Optional<Seat> findByFlightAndSeatNumber(Flight flight, String seatNumber);
+
+  boolean existsByFlightAndStatusNot(Flight flight, SeatStatus status);
+
+  void deleteByFlight(Flight flight);  
 }
