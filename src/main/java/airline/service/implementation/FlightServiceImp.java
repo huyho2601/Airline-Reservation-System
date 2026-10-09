@@ -82,7 +82,7 @@ public class FlightServiceImp implements FlightService {
         col = 0;
         row++;
       }
-      String seatNumber = letters[col] + row;
+      String seatNumber = row + letters[col];
       Seat seat = new Seat(seatNumber, SeatStatus.AVAILABLE, flight);
       col++;
       seatList.add(seat);
