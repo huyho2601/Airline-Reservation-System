@@ -10,8 +10,10 @@ import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.entity.enums.UserRole;
+import airline.error.DeletionException;
 import airline.error.InvalidCredentialsException;
 import airline.error.ResourceNotFoundException;
+import airline.repository.BookingRepository;
 import airline.repository.UserRepository;
 import airline.service.UserService;
 
@@ -24,10 +26,12 @@ public class UserServiceImp implements UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final BookingRepository bookingRepository;
 
-  public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, BookingRepository bookingRepository) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+    this.bookingRepository = bookingRepository;
   }
 
   @Override
@@ -109,6 +113,12 @@ public class UserServiceImp implements UserService {
   @Transactional
   public void deleteUser(Long id) {
     User currentUser = getUserById(id);
+
+    // Check if the user has any bookings
+    if (bookingRepository.existsByUser(currentUser)) {
+      throw new DeletionException("Cannot delete user " + id + " because they have bookings.");
+    }
+
     userRepository.delete(currentUser);
   }
 

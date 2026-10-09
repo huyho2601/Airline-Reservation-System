@@ -2,6 +2,7 @@ package airline.repository;
 
 import airline.entity.Booking;
 import airline.entity.Seat;
+import airline.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
   // Optional<Booking> findByIdAndUser_Name(long id, String userName);
 
   boolean existsBySeat(Seat seat);
+
+  boolean existsByUser(User user);
 }
