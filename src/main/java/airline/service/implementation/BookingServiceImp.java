@@ -3,6 +3,8 @@ package airline.service.implementation;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class BookingServiceImp implements BookingService {
   private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
   private final FlightRepository flightRepository;
- 
+
   public BookingServiceImp(BookingRepository bookingRepository, SeatRepository seatRepository,
       FlightRepository flightRepository) {
     this.bookingRepository = bookingRepository;
@@ -86,12 +88,18 @@ public class BookingServiceImp implements BookingService {
       throw new SeatUnavailableException("Seat is not available: " + seat.getId());
     }
 
-    seat.setStatus(SeatStatus.BOOKED); // Set seat to booked
-    seatRepository.save(seat);
+    // Handle race condition
+    try{
+      seat.setStatus(SeatStatus.BOOKED); // Set seat to booked
+      seatRepository.saveAndFlush(seat); // Save and flush to ensure immediate update
 
-    Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
+      Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
+      return bookingRepository.saveAndFlush(booking);
 
-    return bookingRepository.save(booking);
+    }catch (ObjectOptimisticLockingFailureException | DataIntegrityViolationException e) {
+      throw new SeatUnavailableException("Seat was just taken: " + seat.getId());
+    }
+    
   }
 
   @Transactional
@@ -114,9 +122,18 @@ public class BookingServiceImp implements BookingService {
     Seat newSeat = findSeat(flight, seatNumber);
 
     if (newSeat.getStatus() == SeatStatus.AVAILABLE) {
-      existingBooking.setSeat(newSeat);
-      newSeat.setStatus(SeatStatus.BOOKED);
-      oldSeat.setStatus(SeatStatus.AVAILABLE);
+
+      // Handle race condition
+      try {
+        newSeat.setStatus(SeatStatus.BOOKED); // Set new seat to booked
+        seatRepository.saveAndFlush(newSeat); // Save and flush to ensure immediate update
+
+        oldSeat.setStatus(SeatStatus.AVAILABLE); // Set old seat to available
+        seatRepository.saveAndFlush(oldSeat); // Save and flush to ensure immediate update
+
+      } catch (ObjectOptimisticLockingFailureException | DataIntegrityViolationException e) {
+        throw new SeatUnavailableException("Seat was just taken: " + newSeat.getId());
+      }
     } else {
       throw new SeatUnavailableException("Seat is not available: " + newSeat.getSeatNumber());
     }
@@ -150,7 +167,7 @@ public class BookingServiceImp implements BookingService {
     Seat seat = seatRepository.findByFlightAndSeatNumber(flight, seatNumber)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Seat not found for flight: " + flight.getFlightNumber() + ", seat number: " + seatNumber));
-    return seat;  
+    return seat;
   }
 
   private void checkOwnerOrAdmin(Booking booking, User currentUser) {
@@ -160,7 +177,7 @@ public class BookingServiceImp implements BookingService {
       throw new AccessDeniedException("Not your booking");
     }
   }
-  
+
   private void validateFlight(Flight flight) {
     if (flight.getDepartureTime().isBefore(LocalDateTime.now())) {
       throw new ResourceNotFoundException("Flight has already departed: " + flight.getFlightNumber());
