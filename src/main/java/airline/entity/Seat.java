@@ -1,26 +1,33 @@
 package airline.entity;
 
+import org.hibernate.annotations.DialectOverride.Version;
+
 import airline.entity.enums.SeatStatus;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "seats")
+@Table(name = "seats",
+      uniqueConstraints = @UniqueConstraint (columnNames = {"seat_number", "flight_id"})
+)
 public class Seat {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "seat_number")
+  @Column(name = "seat_number", nullable = false)
   private String seatNumber;
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(name = "seat_status", nullable = false)
   private SeatStatus status;
 
   @ManyToOne
   @JoinColumn (name = "flight_id", nullable = false)
   private Flight flight;
+
+  @Version(major = 0)
+  private Long version;
 
   // Constructors
   public Seat() {
