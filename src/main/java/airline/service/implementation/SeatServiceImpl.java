@@ -1,5 +1,6 @@
 package airline.service.implementation;
 
+import airline.repository.BookingRepository;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import airline.entity.Flight;
 import airline.entity.Seat;
 import airline.entity.enums.SeatStatus;
+import airline.error.DeletionException;
 import airline.error.ResourceNotFoundException;
 import airline.error.SeatUnavailableException;
 import airline.repository.FlightRepository;
@@ -18,12 +20,14 @@ import airline.service.SeatService;
 @Transactional(readOnly = true)
 public class SeatServiceImpl implements SeatService {
 
+  private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
   private final FlightRepository flightRepository;
 
-  public SeatServiceImpl(SeatRepository seatRepository, FlightRepository flightRepository) {
+  public SeatServiceImpl(SeatRepository seatRepository, FlightRepository flightRepository, BookingRepository bookingRepository) {
     this.seatRepository = seatRepository;
     this.flightRepository = flightRepository;
+    this.bookingRepository = bookingRepository;
   }
 
   // Reads
@@ -77,6 +81,13 @@ public class SeatServiceImpl implements SeatService {
   @Override
   @Transactional
   public void deleteSeat(String flightNumber, String seatNumber) {
+
+    // Check if the seat is booked
+    Seat seat = findSeat(flightNumber, seatNumber);
+    if (bookingRepository.existsBySeat(seat)){
+      throw new DeletionException("Cannot delete seat " + seatNumber + " on flight " + flightNumber + " because it is booked.");
+    }
+
     seatRepository.delete(findSeat(flightNumber, seatNumber));
   }
 
