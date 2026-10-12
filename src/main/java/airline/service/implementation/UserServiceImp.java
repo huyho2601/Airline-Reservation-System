@@ -11,6 +11,7 @@ import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.entity.enums.UserRole;
 import airline.error.DeletionException;
+import airline.error.DuplicateResourceException;
 import airline.error.InvalidCredentialsException;
 import airline.error.ResourceNotFoundException;
 import airline.repository.BookingRepository;
@@ -66,10 +67,10 @@ public class UserServiceImp implements UserService {
 
     // Check for duplicate
     if (userRepository.existsByUsername(userRequest.getUsername())) {
-      throw new InvalidCredentialsException("Username already exists: " + userRequest.getUsername());
+      throw new DuplicateResourceException("Username already exists: " + userRequest.getUsername());
     }
     if (userRepository.existsByUserEmail(userRequest.getEmail())) {
-      throw new InvalidCredentialsException("Email already exists: " + userRequest.getEmail());
+      throw new DuplicateResourceException("Email already exists: " + userRequest.getEmail());
     }
     
 

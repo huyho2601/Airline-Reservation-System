@@ -17,6 +17,7 @@ import airline.entity.User;
 import airline.entity.enums.BookingStatus;
 import airline.entity.enums.SeatStatus;
 import airline.entity.enums.UserRole;
+import airline.error.ConflictDataInputException;
 import airline.error.ResourceNotFoundException;
 import airline.error.SeatUnavailableException;
 import airline.repository.BookingRepository;
@@ -182,7 +183,7 @@ public class BookingServiceImp implements BookingService {
 
   private void validateFlight(Flight flight) {
     if (flight.getDepartureTime().isBefore(LocalDateTime.now())) {
-      throw new ResourceNotFoundException("Flight has already departed: " + flight.getFlightNumber());
+      throw new ConflictDataInputException("Flight has already departed: " + flight.getFlightNumber());
     }
   }
 
