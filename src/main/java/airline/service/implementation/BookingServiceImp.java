@@ -131,6 +131,8 @@ public class BookingServiceImp implements BookingService {
         oldSeat.setStatus(SeatStatus.AVAILABLE); // Set old seat to available
         seatRepository.saveAndFlush(oldSeat); // Save and flush to ensure immediate update
 
+        existingBooking.setSeat(newSeat);
+
       } catch (ObjectOptimisticLockingFailureException | DataIntegrityViolationException e) {
         throw new SeatUnavailableException("Seat was just taken: " + newSeat.getId());
       }

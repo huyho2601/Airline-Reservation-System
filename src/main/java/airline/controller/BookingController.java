@@ -48,7 +48,7 @@ public class BookingController {
     @RequestHeader ("X-User-Id")  long userId) {
     requireAdmin(userId);
     return bookingService.getAllBookings();
-  }
+  }   
 
 
   // TODO: implement @AuthenticationPrincipal later (@AuthenticationPrincipal User urrentUser)
@@ -84,9 +84,10 @@ public class BookingController {
   @PutMapping("/{bookingId}/seat")
   public Booking changeSeat(
       @PathVariable long bookingId,
-      @RequestParam String seatNumber,
+      @RequestBody String seatNumber,
       @RequestHeader("X-User-Id") long userId) {
-    return bookingService.updateSeatBooking(bookingId, seatNumber, resolveUser(userId));
+        Booking updateBooking = bookingService.updateSeatBooking(bookingId, seatNumber, resolveUser(userId));
+    return updateBooking;
   }
 
   @DeleteMapping("/{bookingId}")

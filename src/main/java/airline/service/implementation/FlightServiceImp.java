@@ -30,7 +30,7 @@ public class FlightServiceImp implements FlightService {
     this.seatRepository = seatRepository;
   }
 
-  // Main lofic
+  // Main logic
   @Override
   public List<Flight> getAllFlights() {
     return (List<Flight>) flightRepository.findAll();
