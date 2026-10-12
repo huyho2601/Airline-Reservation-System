@@ -90,7 +90,7 @@ public class UserServiceImp implements UserService {
   public User updateUser(long userId, UpdateUserRequest request) {
     User curentUser = getUserById(userId);
 
-    curentUser.setUsername(request.username());
+    curentUser.setName(request.name());
     curentUser.setUserEmail(request.email());
 
     return userRepository.save(curentUser);
