@@ -79,7 +79,8 @@ public class FlightController {
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate fromDate,
       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam LocalDate toDate) {
     LocalDateTime departureDateStart = fromDate.atStartOfDay();
-    LocalDateTime departureDateEnd = toDate.atTime(23, 59, 59);
+    // LocalDateTime departureDateEnd = toDate.atTime(23, 59, 59);
+    LocalDateTime departureDateEnd = toDate.plusDays(1).atStartOfDay().minusSeconds(1); // Set to the end of the day
     SearchFlightRequest searchRequest = new SearchFlightRequest(origin, destination, departureDateStart, departureDateEnd);
       return flightService.searchFlight(searchRequest);
   }
