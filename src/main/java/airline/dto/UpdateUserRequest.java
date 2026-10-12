@@ -2,15 +2,15 @@ package airline.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UpdateUserRequest(
-    @NotBlank 
-    @Size(min = 3, max = 50) 
+    @Pattern(regexp = ".*\\S.*", message = "must not be blank") 
     String name,
-            
-    
-    @NotBlank 
-    @Email 
-    String email
+                
+    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Email
+    @Pattern(regexp = ".*\\S.*", message = "must not be blank")
+    String email)
 ) {}

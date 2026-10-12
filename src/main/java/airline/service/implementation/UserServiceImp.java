@@ -18,6 +18,7 @@ import airline.repository.BookingRepository;
 import airline.repository.UserRepository;
 import airline.service.UserService;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
@@ -90,10 +91,28 @@ public class UserServiceImp implements UserService {
   public User updateUser(long userId, UpdateUserRequest request) {
     User curentUser = getUserById(userId);
 
-    curentUser.setName(request.name());
-    curentUser.setUserEmail(request.email());
+    if (request.name() == null && request.email() == null) {
+      throw new IllegalArgumentException("At least one field (name or email) must be provided for update.");
+    }
 
-    return userRepository.save(curentUser);
+    if (request.email() != null && !request.email().equals(curentUser.getUserEmail())) {
+      if (userRepository.existsByUserEmail(request.email())) {
+        throw new DuplicateResourceException("Email already exists: " + request.email());
+      }
+
+      curentUser.setUserEmail(request.email());
+    }
+
+    if (request.name() != null) {
+      curentUser.setName(request.name());
+    }
+
+    try{
+      return userRepository.saveAndFlush(curentUser);
+    } catch (DataIntegrityViolationException e) {
+      throw new DuplicateResourceException("Email already exists: " + request.email());
+    }
+
   }
 
   @Override
