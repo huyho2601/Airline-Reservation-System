@@ -1,7 +1,5 @@
 package airline.entity;
 
-import org.hibernate.annotations.DialectOverride.Version;
-
 import airline.entity.enums.SeatStatus;
 import jakarta.persistence.*;
 
@@ -25,8 +23,8 @@ public class Seat {
   @ManyToOne
   @JoinColumn (name = "flight_id", nullable = false)
   private Flight flight;
-
-  @Version(major = 0)
+  
+  @Version
   private Long version;
 
   // Constructors
