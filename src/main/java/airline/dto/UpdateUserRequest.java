@@ -12,5 +12,5 @@ public record UpdateUserRequest(
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @Email
     @Pattern(regexp = ".*\\S.*", message = "must not be blank")
-    String email)
+    String email
 ) {}
