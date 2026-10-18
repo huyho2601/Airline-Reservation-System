@@ -13,10 +13,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity 
 public class SecurityConfig {
 
-  private String FLIGHT = "/api/flights";
-  private String USER = "/api/users";
-  private String BOOKING = "/api/bookings";
-  private String ADMIN = "ADMIN";
+  private static final String FLIGHT = "/api/flights";
+  private static final String USER = "/api/users";
+  private static final String BOOKING = "/api/bookings";
+  private static final String ADMIN = "ADMIN";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

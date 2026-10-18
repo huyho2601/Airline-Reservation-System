@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -74,8 +73,7 @@ public class FlightController {
 
   @PostMapping
   public ResponseEntity<Flight> createFlight(
-    @Valid @RequestBody CreateFlightRequest flight,
-    @AuthenticationPrincipal CustomUserDetails principal) {
+    @Valid @RequestBody CreateFlightRequest flight) {
               
     Flight newFlight = flightService.createFlight(flight);
 
@@ -89,8 +87,7 @@ public class FlightController {
 
   @PutMapping("/{flightNumber}")
   public ResponseEntity<Flight> updateFlight(@PathVariable String flightNumber,
-      @AuthenticationPrincipal CustomUserDetails principal,
-      @RequestBody UpdateFlightRequest newRequest) {
+    @RequestBody UpdateFlightRequest newRequest) {
 
     Flight updatedFlight = flightService.updateFlight(flightNumber, newRequest);
 

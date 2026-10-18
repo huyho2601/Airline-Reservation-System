@@ -38,8 +38,7 @@ public class BookingController {
   }
 
   @GetMapping
-  public List<Booking> getAllBookings(
-    @AuthenticationPrincipal CustomUserDetails principal) {
+  public List<Booking> getAllBookings() {
     return bookingService.getAllBookings();
   }   
 
