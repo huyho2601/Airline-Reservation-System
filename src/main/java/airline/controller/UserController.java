@@ -10,6 +10,7 @@ import airline.dto.PasswordChangeRequest;
 import airline.dto.UpdateUserRequest;
 import airline.entity.User;
 import airline.entity.enums.UserRole;
+import airline.security.CustomUserDetails;
 import airline.service.UserService;
 import airline.service.implementation.UserServiceImp;
 import jakarta.validation.Valid;
@@ -20,6 +21,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,18 +44,19 @@ public class UserController {
 
   // Admin only
   @GetMapping
-  public List<User> getAllUsers(@RequestHeader("X-User-Id") long userId) {
-    requireAdmin(userId);
+  public List<User> getAllUsers() {
     return userService.getAllUsers();
   }
 
   @GetMapping("/search")
-  public List<User> getUsersByName(@RequestParam String name) {
+  public List<User> getUsersByName(
+      @RequestParam String name) {
     return userService.getUserByName(name);
   }
 
   // User
   @GetMapping("/{userId}")
+  @PreAuthorize("hasRole('ADMIN') or #userId == principal.user.id")
   public User getUserById(@PathVariable long userId) {
     return userService.getUserById(userId);
   }
@@ -69,19 +73,19 @@ public class UserController {
     return ResponseEntity.created(location).body(newUser);
   }
 
-  @PostMapping("/admin")
-  public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
-    User newUser = userService.createAdmin(request);
+  // @PostMapping("/admin")
+  // public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
+  //   User newUser = userService.createAdmin(request);
 
-    URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-        .path("/api/users/{userId}")
-        .buildAndExpand(newUser.getId())
-        .toUri();
+  //   URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+  //       .path("/api/users/{userId}")
+  //       .buildAndExpand(newUser.getId())
+  //       .toUri();
 
-    return ResponseEntity.created(location).body(newUser);
-  }
+  //   return ResponseEntity.created(location).body(newUser);
+  // }
 
-  // TODO: change to @AuthenticationPrincipal after implementing spring security
+  @PreAuthorize("hasRole('ADMIN') or #userId == principal.user.id")
   @PatchMapping("/{userId}")
   public ResponseEntity updateUser(
       @PathVariable long userId,
@@ -92,6 +96,7 @@ public class UserController {
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
+  @PreAuthorize("hasRole('ADMIN') or #userId == principal.user.id")
   @PutMapping("/{userId}/password")
   public ResponseEntity<Void> changePassword(
       @PathVariable long userId,
@@ -100,20 +105,11 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
+  @PreAuthorize("hasRole('ADMIN') or #userId == principal.user.id")
   @DeleteMapping("/{userId}")
   public ResponseEntity deleteUser(@PathVariable long userId) {
     userService.deleteUser(userId);
     return new ResponseEntity<>("Deleted sucessfully", HttpStatus.OK);
   }
-
-  // Temporary: replace with @AuthenticationPrincipal once Spring Security is set up
-  private User requireAdmin(long userId) {
-    User user = userService.getUserById(userId);
-    if (user.getRole() != UserRole.ADMIN) {
-      throw new AccessDeniedException("Admin access required");
-    }
-    return user;
-  }
-
 
 }
