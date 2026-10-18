@@ -17,4 +17,6 @@ public interface BookingService {
   public Booking updateSeatBooking(long bookingId, String seatNumber, User currentUser);
   
   public void deleteBooking(long id, User currentUser);
+
+  public List<Booking> getBookingsForUser(User user);
 }

@@ -39,7 +39,6 @@ public class BookingServiceImp implements BookingService {
     this.flightRepository = flightRepository;
   }
 
-  // TODO: @AuthenticationPrincipal
   @Override
   public List<Booking> getAllBookings() {
     return bookingRepository.findAll();
@@ -56,13 +55,10 @@ public class BookingServiceImp implements BookingService {
     return booking;
   }
 
-  // 1: User should not be able to send id himself, this should come from the
-  // Spring Security (authentication concern)
-  // 2: Seat should not be sent as object. Retrieve seat by its id
-  // 3: Booking time should be .now()
-  // 4: When creating the booking, status should be AVAILABLE
-  // Stay alet with race condition: when 2 or more clients book a same seat at a
-  // same time
+  @Override
+  public List<Booking> getBookingsForUser(User user) {
+    return bookingRepository.findByUser(user);
+  }
 
   @Transactional
   @Override
@@ -186,5 +182,7 @@ public class BookingServiceImp implements BookingService {
       throw new ConflictDataInputException("Flight has already departed: " + flight.getFlightNumber());
     }
   }
+
+  
 
 }
