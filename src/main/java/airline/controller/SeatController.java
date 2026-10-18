@@ -59,12 +59,12 @@ public class SeatController {
   //   return seatService.cancelSeatReservation(flightNumber, seatNumber);
   // }
 
-  // DELETE /api/flights/KL1234/seats/12A
-  @DeleteMapping("/{seatNumber}")
-  public ResponseEntity<Void> deleteSeat(
-    @PathVariable String flightNumber,
-        @PathVariable String seatNumber) {
-    seatService.deleteSeat(flightNumber, seatNumber);
-    return ResponseEntity.noContent().build();
-  }
+  // // DELETE /api/flights/KL1234/seats/12A
+  // @DeleteMapping("/{seatNumber}")
+  // public ResponseEntity<Void> deleteSeat(
+  //   @PathVariable String flightNumber,
+  //   @PathVariable String seatNumber) {
+  //   seatService.deleteSeat(flightNumber, seatNumber);
+  //   return ResponseEntity.noContent().build();
+  // }
 }

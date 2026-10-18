@@ -25,7 +25,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/error").permitAll()
                 // Flight
-                .requestMatchers(HttpMethod.GET, FLIGHT + "/**").permitAll() //flightNumber, search
+                .requestMatchers(HttpMethod.GET, FLIGHT + "/**").permitAll() //flightNumber, search, seats on that flights
                 .requestMatchers(HttpMethod.POST, FLIGHT).hasRole(ADMIN)
                 .requestMatchers(HttpMethod.PUT, FLIGHT + "/**").hasRole(ADMIN)
                 .requestMatchers(HttpMethod.DELETE, FLIGHT + "/**").hasRole(ADMIN)
