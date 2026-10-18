@@ -6,6 +6,7 @@ import airline.entity.enums.UserRole;
 import airline.error.ResourceNotFoundException;
 import airline.error.UnauthorizedUserException;
 import airline.repository.UserRepository;
+import airline.security.CustomUserDetails;
 import airline.service.FlightService;
 import airline.dto.CreateFlightRequest;
 import airline.dto.SearchFlightRequest;
@@ -21,6 +22,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,28 +41,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class FlightController {
 
   private FlightService flightService;
-  private UserRepository userRepository;
 
   // Constructor
-  public FlightController(FlightService flightService, UserRepository userRepository) {
+  public FlightController(FlightService flightService) {
     this.flightService = flightService;
-    this.userRepository = userRepository;
-  }
-
-  // Temporary solution to resolve user by ID
-  private User resolveUser(long userId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
-    return user;
   }
   
-  // Temporary solution to check if the user is an admin
-  private void checkAdmin(User user) {
-    if (user.getRole() != UserRole.ADMIN) {
-      throw new UnauthorizedUserException("Access denied!");
-    }
-  }
-
   // GET API -> Fetch all flights
   @GetMapping
   public List<Flight> getAllFlights() {
@@ -89,11 +75,8 @@ public class FlightController {
   @PostMapping
   public ResponseEntity<Flight> createFlight(
     @Valid @RequestBody CreateFlightRequest flight,
-      @RequestHeader("X-User-Id") long userId) {
-        
-    User user = resolveUser(userId);
-    checkAdmin(user);
-
+    @AuthenticationPrincipal CustomUserDetails principal) {
+              
     Flight newFlight = flightService.createFlight(flight);
 
     URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -106,11 +89,8 @@ public class FlightController {
 
   @PutMapping("/{flightNumber}")
   public ResponseEntity<Flight> updateFlight(@PathVariable String flightNumber,
-      @RequestHeader("X-User-Id") long userId,
+      @AuthenticationPrincipal CustomUserDetails principal,
       @RequestBody UpdateFlightRequest newRequest) {
-
-    User user = resolveUser(userId);
-    checkAdmin(user);
 
     Flight updatedFlight = flightService.updateFlight(flightNumber, newRequest);
 
@@ -120,10 +100,7 @@ public class FlightController {
   @DeleteMapping ("/{flightNumber}")
   public ResponseEntity<String> deleteFlight(
     @PathVariable String flightNumber,
-      @RequestHeader("X-User-Id") long userId) {
-
-    User user = resolveUser(userId);
-    checkAdmin(user);
+      @AuthenticationPrincipal CustomUserDetails principal) {
 
     flightService.deleteFlight(flightNumber);
     
