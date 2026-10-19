@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
+import airline.dto.ChangeSeatRequest;
 import airline.dto.CreateBookingRequest;
 import airline.entity.Booking;
 import airline.entity.User;
@@ -80,9 +80,9 @@ public class BookingController {
   @PutMapping("/{bookingId}/seat")
   public Booking changeSeat(
       @PathVariable long bookingId,
-      @RequestBody String seatNumber,
+      @RequestBody ChangeSeatRequest seatRequest,
       @AuthenticationPrincipal CustomUserDetails principal) {
-      Booking updateBooking = bookingService.updateSeatBooking(bookingId, seatNumber, principal.getUser());
+      Booking updateBooking = bookingService.updateSeatBooking(bookingId, seatRequest.newSeatNumber(), principal.getUser());
     return updateBooking;
   }
 
