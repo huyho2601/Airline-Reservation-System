@@ -33,6 +33,10 @@ public class CustomUserDetails implements UserDetails {
     return user.getUsername();
   }
 
+  public String getRealName() {
+    return user.getName();
+  }
+
   public User getUser() {
     return user;
   }
