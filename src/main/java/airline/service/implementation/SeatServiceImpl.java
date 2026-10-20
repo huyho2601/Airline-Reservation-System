@@ -47,9 +47,9 @@ public class SeatServiceImpl implements SeatService {
     return findSeat(flightNumber, seatNumber);
   }
 
-  // Writes 
-  
-  // Seat reservations needs timer. Now, its endpoints are disabled until timer is implemented. 
+  // Writes
+
+  // Seat reservations needs timer. Now, its endpoints are disabled until timer is implemented.
   @Override
   @Transactional
   public Seat reserveSeat(String flightNumber, String seatNumber) {
@@ -84,8 +84,9 @@ public class SeatServiceImpl implements SeatService {
 
     // Check if the seat is booked
     Seat seat = findSeat(flightNumber, seatNumber);
-    if (bookingRepository.existsBySeat(seat)){
-      throw new DeletionException("Cannot delete seat " + seatNumber + " on flight " + flightNumber + " because it is booked.");
+    if (bookingRepository.existsBySeat(seat)) {
+      throw new DeletionException(
+          "Cannot delete seat " + seatNumber + " on flight " + flightNumber + " because it is booked.");
     }
 
     seatRepository.delete(findSeat(flightNumber, seatNumber));

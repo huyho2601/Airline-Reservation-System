@@ -19,13 +19,13 @@ import airline.entity.Seat;
 import airline.entity.enums.SeatStatus;
 
 @Service
-public class FlightServiceImp implements FlightService {
+public class FlightServiceImpl implements FlightService {
 
   private final FlightRepository flightRepository;
   private final SeatRepository seatRepository;
 
   // Constructor
-  public FlightServiceImp(FlightRepository flightRepository, SeatRepository seatRepository) {
+  public FlightServiceImpl(FlightRepository flightRepository, SeatRepository seatRepository) {
     this.flightRepository = flightRepository;
     this.seatRepository = seatRepository;
   }

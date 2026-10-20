@@ -12,7 +12,7 @@ import airline.entity.User;
 import airline.entity.enums.UserRole;
 import airline.security.CustomUserDetails;
 import airline.service.UserService;
-import airline.service.implementation.UserServiceImp;
+import airline.service.implementation.UserServiceImpl;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -75,14 +75,14 @@ public class UserController {
 
   // @PostMapping("/admin")
   // public ResponseEntity createAdmin(@RequestBody CreateUserRequest request) {
-  //   User newUser = userService.createAdmin(request);
+  // User newUser = userService.createAdmin(request);
 
-  //   URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
-  //       .path("/api/users/{userId}")
-  //       .buildAndExpand(newUser.getId())
-  //       .toUri();
+  // URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
+  // .path("/api/users/{userId}")
+  // .buildAndExpand(newUser.getId())
+  // .toUri();
 
-  //   return ResponseEntity.created(location).body(newUser);
+  // return ResponseEntity.created(location).body(newUser);
   // }
 
   @PreAuthorize("hasRole('ADMIN') or #userId == principal.user.id")

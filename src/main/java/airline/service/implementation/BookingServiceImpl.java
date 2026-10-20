@@ -26,13 +26,13 @@ import airline.repository.SeatRepository;
 import airline.service.BookingService;
 
 @Service
-public class BookingServiceImp implements BookingService {
+public class BookingServiceImpl implements BookingService {
 
   private final BookingRepository bookingRepository;
   private final SeatRepository seatRepository;
   private final FlightRepository flightRepository;
 
-  public BookingServiceImp(BookingRepository bookingRepository, SeatRepository seatRepository,
+  public BookingServiceImpl(BookingRepository bookingRepository, SeatRepository seatRepository,
       FlightRepository flightRepository) {
     this.bookingRepository = bookingRepository;
     this.seatRepository = seatRepository;
@@ -86,17 +86,17 @@ public class BookingServiceImp implements BookingService {
     }
 
     // Handle race condition
-    try{
+    try {
       seat.setStatus(SeatStatus.BOOKED); // Set seat to booked
       seatRepository.saveAndFlush(seat); // Save and flush to ensure immediate update
 
       Booking booking = new Booking(user, LocalDateTime.now(), seat, BookingStatus.CONFIRMED);
       return bookingRepository.saveAndFlush(booking);
 
-    }catch (ObjectOptimisticLockingFailureException | DataIntegrityViolationException e) {
+    } catch (ObjectOptimisticLockingFailureException | DataIntegrityViolationException e) {
       throw new SeatUnavailableException("Seat was just taken: " + seat.getId());
     }
-    
+
   }
 
   @Transactional
@@ -182,7 +182,5 @@ public class BookingServiceImp implements BookingService {
       throw new ConflictDataInputException("Flight has already departed: " + flight.getFlightNumber());
     }
   }
-
-  
 
 }

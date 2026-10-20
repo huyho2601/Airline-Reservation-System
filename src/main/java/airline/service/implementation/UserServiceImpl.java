@@ -22,7 +22,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
   private static final String USERNOTFOUND = "User not found: ";
 
@@ -30,7 +30,7 @@ public class UserServiceImp implements UserService {
   private final PasswordEncoder passwordEncoder;
   private final BookingRepository bookingRepository;
 
-  public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, BookingRepository bookingRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, BookingRepository bookingRepository) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.bookingRepository = bookingRepository;
@@ -63,7 +63,7 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
-  @Transactional 
+  @Transactional
   public User createUser(CreateUserRequest userRequest) {
 
     // Check for duplicate
@@ -73,7 +73,6 @@ public class UserServiceImp implements UserService {
     if (userRepository.existsByUserEmail(userRequest.getEmail())) {
       throw new DuplicateResourceException("Email already exists: " + userRequest.getEmail());
     }
-    
 
     // Create new user instance
     User newUser = new User();
@@ -107,7 +106,7 @@ public class UserServiceImp implements UserService {
       curentUser.setName(request.name());
     }
 
-    try{
+    try {
       return userRepository.saveAndFlush(curentUser);
     } catch (DataIntegrityViolationException e) {
       throw new DuplicateResourceException("Email already exists: " + request.email());
@@ -143,7 +142,7 @@ public class UserServiceImp implements UserService {
   }
 
   @Override
-  @Transactional 
+  @Transactional
   public User createAdmin(CreateUserRequest userRequest) {
 
     User newUser = new User();
