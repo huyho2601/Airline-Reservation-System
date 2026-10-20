@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 application.properties
 
+
 ### STS ###
 .apt_generated
 .classpath
@@ -33,3 +34,4 @@ build/
 ### VS Code ###
 .vscode/
 .vscode/launch.json
+*.log
