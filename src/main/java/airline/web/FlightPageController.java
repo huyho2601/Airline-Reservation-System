@@ -33,7 +33,7 @@ public class FlightPageController {
       
     model.addAttribute("origin", origin);
     model.addAttribute("destination", destination);
-    model.addAttribute("from", fromDate);
+    model.addAttribute("fromDate", fromDate);
     model.addAttribute("toDate", toDate);
 
     if (!StringUtils.hasText(origin) || !StringUtils.hasText(destination) || fromDate == null || toDate == null) {

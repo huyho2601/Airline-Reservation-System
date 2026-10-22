@@ -1,11 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <title>Search Flights</title>
+  </head>
+
+  <body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
+
+    <main class="container my-4">
+      <form
+        th:action="@{/flights}"
+        method="get"
+        class="row g-3 align-items-end"
+      >
+        <div class="sm:col-3">
+          <label class="form-label" for="origin">From:</label>
+          <input
+            class="form-control"
+            name="origin"
+            id="origin"
+            th:value="${origin}"
+            required
+          />
+        </div>
+
+        <div class="sm:col-3">
+          <label class="form-label" for="destination">To:</label>
+          <input
+            class="form-control"
+            name="destination"
+            id="destination"
+            th:value="${destination}"
+            required
+          />
+        </div>
+
+        <div class="sm:col-2">
+          <label class="form-label" for="fromDate">Start:</label>
+          <input
+            class="form-control"
+            name="fromDate"
+            id="fromDate"
+            type="date"
+            th:value="${fromDate}"
+            required
+          />
+        </div>
+
+        <div class="sm:col-2">
+          <label class="form-label" for="toDate">End:</label>
+          <input
+            class="form-control"
+            name="toDate"
+            id="toDate"
+            type="date"
+            th:value="${toDate}"
+            required
+          />
+        </div>
+
+        <div class="sm:col-2">
+          <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+      </form>
+    </main>
+  </body>
 </html>
