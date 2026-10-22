@@ -56,7 +56,11 @@ public class SecurityConfig {
                 .requestMatchers("/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole(ADMIN)
                 .anyRequest().authenticated())
-            .formLogin(form -> form.loginPage("/login").permitAll());
+                .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/dashboard")
+                    .failureUrl("/login?error")
+                    .permitAll());
         return http.build();
     }
 }

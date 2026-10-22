@@ -5,6 +5,8 @@ import airline.repository.SeatRepository;
 import airline.service.FlightService;
 import airline.error.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,11 +126,18 @@ public class FlightServiceImpl implements FlightService {
   }
 
   @Override
-  public List<Flight> searchFlight(SearchFlightRequest searchRequest) {
+  public List<Flight> searchFlight(String origin, String destination, LocalDate from, LocalDate to) {
+
+    LocalDateTime start = from.atStartOfDay();
+    LocalDateTime end = to.atTime(23, 59, 59);
+
+    // SearchFlightRequest searchRequest = new SearchFlightRequest(origin, destination, from, to);
+    // new SearchFlightRequest(origin, destination, start, end);
+
     return flightRepository.findByOriginIgnoreCaseAndDestinationIgnoreCaseAndDepartureTimeBetween(
-        searchRequest.origin(),
-        searchRequest.destination(),
-        searchRequest.start(),
-        searchRequest.end());
+        origin,
+        destination,
+        start,
+        end);
   }
 }

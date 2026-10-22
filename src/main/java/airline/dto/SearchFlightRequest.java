@@ -1,6 +1,6 @@
 package airline.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -12,10 +12,10 @@ public record SearchFlightRequest(
     String destination,
           
   @NotBlank
-  LocalDateTime start,
+  LocalDate start,
           
   @NotBlank 
-  LocalDateTime end
+  LocalDate end
 ) {
   
 }

@@ -4,6 +4,8 @@ import airline.dto.UpdateFlightRequest;
 import airline.dto.CreateFlightRequest;
 import airline.dto.SearchFlightRequest;
 import airline.entity.Flight;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface FlightService {
@@ -11,7 +13,7 @@ public interface FlightService {
 
   Flight getFlightByFlightNumber(String flightNumber);
 
-  List<Flight> searchFlight(SearchFlightRequest searchRequest);
+  List<Flight> searchFlight(String origin, String destination, LocalDate from, LocalDate to);
 
   Flight createFlight(CreateFlightRequest flight);
   
