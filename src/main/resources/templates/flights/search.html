@@ -68,6 +68,40 @@
           <button type="submit" class="btn btn-primary w-100">Search</button>
         </div>
       </form>
+
+      <div
+        th:if="${error}"
+        class="alert alert-danger mt-3"
+        th:text="${error}"
+      ></div>
+
+      <div th:if="${flights != null}" class="mt-4">
+        <p th:if="${#lists.isEmpty(flights)}">No fligths found</p>
+        <table th:unless="${#lists.isEmpty(flights)}" class="table">
+          <td>Flight Number</td>
+          <td>Origin</td>
+          <td>Destination</td>
+          <td>Departure Time</td>
+          <td>Arrival Time</td>
+          <td>Price</td>
+          <td>Select Seat</td>
+          <tr th:each="flight:${flights}">
+            <td th:text="${flight.flightNumber}"></td>
+            <td th:text="${flight.origin}"></td>
+            <td th:text="${flight.destination}"></td>
+            <td th:text="${flight.departureTime}"></td>
+            <td th:text="${flight.arrivalTime}"></td>
+            <td th:text="${flight.price}"></td>
+            <td>
+              <a
+                th:href="@{/flights/{n}(n=${flight.flightNumber})}"
+                class="btn btn-primary"
+                >Select Seat</a
+              >
+            </td>
+          </tr>
+        </table>
+      </div>
     </main>
   </body>
 </html>
