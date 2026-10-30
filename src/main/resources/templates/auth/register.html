@@ -42,6 +42,7 @@
                 required
                 autofocus
               />
+              <div class="invalid-feedback" th:errors="*{fullName}"></div>
             </div>
 
             <div class="invalid-feedback" th:errors="*{fullName}"></div>
@@ -50,6 +51,7 @@
               <label class="form-label" for="email">Email</label>
               <input
                 th:field="*{email}"
+                th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
                 type="email"
                 id="email"
                 name="email"
@@ -58,12 +60,14 @@
                 required
                 autofocus
               />
+              <div class="invalid-feedback" th:errors="*{fullName}"></div>
             </div>
 
             <div class="mb-3">
               <label class="form-label" for="username">Username</label>
               <input
                 th:field="*{username}"
+                th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                 type="text"
                 id="username"
                 name="username"
@@ -72,12 +76,14 @@
                 required
                 autofocus
               />
+              <div class="invalid-feedback" th:errors="*{username}"></div>
             </div>
 
             <div class="mb-3">
               <label class="form-label" for="password">Password</label>
               <input
                 th:field="*{password}"
+                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
                 type="password"
                 id="password"
                 name="password"
@@ -85,6 +91,7 @@
                 placeholder="Enter your password"
                 required
               />
+              <div class="invalid-feedback" th:errors="*{password}"></div>
             </div>
 
             <div class="mb-3">
@@ -93,6 +100,7 @@
               >
               <input
                 th:field="*{confirmPassword}"
+                th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
@@ -100,6 +108,10 @@
                 placeholder="Enter your password again"
                 required
               />
+              <div
+                class="invalid-feedback"
+                th:errors="*{confirmPassword}"
+              ></div>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 mb-3">
