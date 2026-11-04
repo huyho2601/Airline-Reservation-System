@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Flight
-                        .requestMatchers(HttpMethod.GET, FLIGHT + "/**").permitAll() //flightNumber, search, seats on that flights
+                        .requestMatchers(HttpMethod.GET, FLIGHT).permitAll() //flightNumber, search, seats on that flights
                         .requestMatchers(HttpMethod.POST, FLIGHT).hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PUT, FLIGHT + "/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, FLIGHT + "/**").hasRole(ADMIN)
