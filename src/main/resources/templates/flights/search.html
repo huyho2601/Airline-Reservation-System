@@ -1,107 +1,92 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <title>Search Flights</title>
-  </head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Flights</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div th:replace="~{fragments/layout :: navbar}"></div>
 
-  <body>
-    <div th:replace="~{fragments/layout :: navbar}"></div>
+  <main class="container">
 
-    <main class="container my-4">
-      <form
-        th:action="@{/flights}"
-        method="get"
-        class="row g-3 align-items-end"
-      >
-        <div class="sm:col-3">
-          <label class="form-label" for="origin">From:</label>
-          <input
-            class="form-control"
-            name="origin"
-            id="origin"
-            th:value="${origin}"
-            required
-          />
-        </div>
+    <!-- Search form -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h1 class="h4 mb-3">Search flights</h1>
 
-        <div class="sm:col-3">
-          <label class="form-label" for="destination">To:</label>
-          <input
-            class="form-control"
-            name="destination"
-            id="destination"
-            th:value="${destination}"
-            required
-          />
-        </div>
+        <form th:action="@{/flights}" method="get" class="row g-3 align-items-end">
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="origin">From</label>
+            <input class="form-control" name="origin" id="origin"
+                   th:value="${origin}" placeholder="e.g. AMS" required>
+          </div>
 
-        <div class="sm:col-2">
-          <label class="form-label" for="fromDate">Start:</label>
-          <input
-            class="form-control"
-            name="fromDate"
-            id="fromDate"
-            type="date"
-            th:value="${fromDate}"
-            required
-          />
-        </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="destination">To</label>
+            <input class="form-control" name="destination" id="destination"
+                   th:value="${destination}" placeholder="e.g. LHR" required>
+          </div>
 
-        <div class="sm:col-2">
-          <label class="form-label" for="toDate">End:</label>
-          <input
-            class="form-control"
-            name="toDate"
-            id="toDate"
-            type="date"
-            th:value="${toDate}"
-            required
-          />
-        </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label" for="fromDate">Start</label>
+            <input class="form-control" name="fromDate" id="fromDate" type="date"
+                   th:value="${fromDate}" required>
+          </div>
 
-        <div class="sm:col-2">
-          <button type="submit" class="btn btn-primary w-100">Search</button>
-        </div>
-      </form>
+          <div class="col-6 col-md-2">
+            <label class="form-label" for="toDate">End</label>
+            <input class="form-control" name="toDate" id="toDate" type="date"
+                   th:value="${toDate}" required>
+          </div>
 
-      <div
-        th:if="${error}"
-        class="alert alert-danger mt-3"
-        th:text="${error}"
-      ></div>
-
-      <div th:if="${flights != null}" class="mt-4">
-        <p th:if="${#lists.isEmpty(flights)}">No fligths found</p>
-        <table th:unless="${#lists.isEmpty(flights)}" class="table">
-          <td>Flight Number</td>
-          <td>Origin</td>
-          <td>Destination</td>
-          <td>Departure Time</td>
-          <td>Arrival Time</td>
-          <td>Price</td>
-          <td>Select Seat</td>
-          <tr th:each="flight:${flights}">
-            <td th:text="${flight.flightNumber}"></td>
-            <td th:text="${flight.origin}"></td>
-            <td th:text="${flight.destination}"></td>
-            <td th:text="${flight.departureTime}"></td>
-            <td th:text="${flight.arrivalTime}"></td>
-            <td th:text="${flight.price}"></td>
-            <td>
-              <a
-                th:href="@{/flights/{n}(n=${flight.flightNumber})}"
-                class="btn btn-primary"
-                >Select Seat</a
-              >
-            </td>
-          </tr>
-        </table>
+          <div class="col-12 col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+          </div>
+        </form>
       </div>
-    </main>
-  </body>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- Results -->
+    <div th:if="${flights != null}" class="card shadow-sm mb-5">
+      <div class="card-body">
+        <p th:if="${#lists.isEmpty(flights)}" class="text-muted mb-0">No flights found.</p>
+
+        <div th:unless="${#lists.isEmpty(flights)}" class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Flight</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="flight : ${flights}">
+                <td class="fw-semibold" th:text="${flight.flightNumber}"></td>
+                <td th:text="${flight.origin}"></td>
+                <td th:text="${flight.destination}"></td>
+                <td th:text="${#temporals.format(flight.departureTime, 'dd MMM yyyy, HH:mm')}"></td>
+                <td th:text="${#temporals.format(flight.arrivalTime, 'dd MMM yyyy, HH:mm')}"></td>
+                <td th:text="${flight.price}"></td>
+                <td class="text-end">
+                  <a th:href="@{/flights/{n}(n=${flight.flightNumber})}"
+                     class="btn btn-primary btn-sm">Select seat</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</body>
 </html>

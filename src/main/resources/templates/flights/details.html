@@ -80,7 +80,7 @@
       </div>
 
       <div class="d-flex flex-column align-items-center gap-2">
-        <!-- One line per row; entry.key = row number, entry.value = seats in that row -->
+       
         <div th:each="entry : ${seatMap}" class="d-flex align-items-center gap-1">
 
           <span class="row-label text-muted small text-end me-2" th:text="${entry.key}">1</span>
