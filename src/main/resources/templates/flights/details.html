@@ -22,11 +22,7 @@
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-dark bg-primary mb-4">
-  <div class="container">
-    <a class="navbar-brand" th:href="@{/flights}">✈ Airline</a>
-  </div>
-</nav>
+<div th:replace="~{fragments/layout :: navbar}"></div>
 
 <main class="container">
 
@@ -80,7 +76,6 @@
       </div>
 
       <div class="d-flex flex-column align-items-center gap-2">
-       
         <div th:each="entry : ${seatMap}" class="d-flex align-items-center gap-1">
 
           <span class="row-label text-muted small text-end me-2" th:text="${entry.key}">1</span>

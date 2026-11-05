@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/login").permitAll()
-                .requestMatchers("/flights/**").permitAll()
+                .requestMatchers("/flights").permitAll()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/css/**").permitAll()
                 .requestMatchers("/js/**").permitAll()
