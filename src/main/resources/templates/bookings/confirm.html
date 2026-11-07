@@ -157,14 +157,14 @@
               >5</span
             >
 
-            <form th:action="@{/flights/{fn}/book(fn=${flight.flightNumber})}", method="post", class="flex-grow-1">
+            <form th:action="@{/flights/{fn}/book(fn=${flight.flightNumber})}" method="post" class="flex-grow-1">
               <input type="hidden" name="seat" th:value="${seat.seatNumber}">
               <button type="submit" class=" btn btn-primary w-100">
               Confirm booking
             </button>
             </form>
             
-            <a th:href="@{flights/{fn}/book(fn=${flight.flightNumber})}" class="btn btn-outline-secondary">Cancel</a>
+            <a th:href="@{/flights/{fn}(fn=${flight.flightNumber})}" class="btn btn-outline-secondary">Cancel</a>
           </div>
 
 

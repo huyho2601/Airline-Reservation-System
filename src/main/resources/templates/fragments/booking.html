@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+  <div th:fragment="summary(flight, seat)">
+
+    <!-- 1. Flight -->
+    <div class="py-3 border-top-0 d-flex align-items-start gap-3">
+      <span class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary-subtle flex-shrink-0 text-primary-emphasis small fw-semibold circle">1</span>
+
+      <div class="flex-grow-1">
+        <h3 class="h5 mb-0" th:text="${flight.flightNumber}">KL1234</h3>
+        <div class="text-muted">
+          <span th:text="${flight.origin}">AMS</span>
+          &rarr;
+          <span th:text="${flight.destination}">LHR</span>
+        </div>
+
+        <div class="row g-2 mt-2">
+          <div class="col-6">
+            <div class="small text-muted">Departure</div>
+            <div class="fw-semibold"
+                 th:text="${#temporals.format(flight.departureTime, 'dd MMM yyyy, HH:mm')}">01 Dec 2026, 10:00</div>
+          </div>
+          <div class="col-6">
+            <div class="small text-muted">Arrival</div>
+            <div class="fw-semibold"
+                 th:text="${#temporals.format(flight.arrivalTime, 'dd MMM yyyy, HH:mm')}">01 Dec 2026, 11:15</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Seat -->
+    <div class="py-3 border-top d-flex align-items-center gap-3">
+      <span class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary-subtle flex-shrink-0 text-primary-emphasis small fw-semibold circle">2</span>
+
+      <div class="flex-grow-1 d-flex align-items-center">
+        <p class="text-muted small mb-0">Your seat</p>
+        <span class="badge bg-success-subtle text-success-emphasis fs-5 px-3 py-2 ms-auto"
+              th:text="${seat.seatNumber}">12A</span>
+      </div>
+    </div>
+
+    <!-- 3. Price -->
+    <div class="py-3 border-top d-flex align-items-center gap-3">
+      <span class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary-subtle flex-shrink-0 text-primary-emphasis small fw-semibold circle">3</span>
+
+      <div class="flex-grow-1 d-flex align-items-center">
+        <p class="text-muted small mb-0">Total price</p>
+        <span class="fs-4 fw-semibold ms-auto"
+              th:text="'€' + ${#numbers.formatDecimal(flight.price, 1, 2)}">€149.00</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
