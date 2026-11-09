@@ -3,10 +3,16 @@ package airline.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class UpdateFlightRequest {
   private String origin;
   private String destination;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime departureTime;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime arrivalTime;
   private BigDecimal price;
 
@@ -19,6 +25,8 @@ public class UpdateFlightRequest {
     this.arrivalTime = arrivalTime;
     this.price = price;
   }
+
+  public UpdateFlightRequest(){}
 
   // Setters and Getters
   public String getOrigin() {
