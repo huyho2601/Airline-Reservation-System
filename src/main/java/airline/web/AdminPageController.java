@@ -16,14 +16,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import airline.dto.AdminFlightRow;
+import airline.dto.AdminUserRow;
 import airline.dto.CreateFlightRequest;
 import airline.dto.RegisterForm;
 import airline.dto.UpdateFlightRequest;
 import airline.entity.Flight;
 import airline.entity.Seat;
+import airline.entity.User;
+import airline.entity.enums.UserRole;
 import airline.security.CustomUserDetails;
+import airline.service.BookingService;
 import airline.service.FlightService;
 import airline.service.SeatService;
+import airline.service.UserService;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,10 +39,15 @@ public class AdminPageController {
 
   private final FlightService flightService;
   private final SeatService seatService;
+  private final UserService userService;
+  private final BookingService bookingService;
 
-  public AdminPageController(FlightService flightService, SeatService seatService) {
+  public AdminPageController(FlightService flightService, SeatService seatService, UserService userService,
+      BookingService bookingService) {
     this.flightService = flightService;
     this.seatService = seatService;
+    this.userService = userService;
+    this.bookingService = bookingService;
   }
 
   @GetMapping("/admin/flights")
@@ -133,7 +143,7 @@ public class AdminPageController {
 
     flightService.updateFlight(flightNumber, filledForm);
 
-    redirect.addFlashAttribute("success", "Flight " + flightNumber + "edited succesfully");
+    redirect.addFlashAttribute("success", "Flight " + flightNumber + " edited succesfully");
 
     return "redirect:/admin/flights";
   }
@@ -159,6 +169,46 @@ public class AdminPageController {
     redirect.addFlashAttribute("success",
         "Flight " + filledForm.getFlightNumber() + " created successfully");
     return "redirect:/admin/flights";
+  }
+
+  @GetMapping("/admin/users")
+  public String manageUsers(
+      @RequestParam(required = false) String value,
+      @RequestParam(defaultValue = "") String role,
+      Model model) {
+
+    model.addAttribute("value", value);
+    model.addAttribute("role", role);
+
+    List<AdminUserRow> rows = new ArrayList<>();
+    List<User> users = new ArrayList<>();
+
+    int userCount = userService.getUserByRole(UserRole.CLIENT).size();
+    int adminCount = userService.getUserByRole(UserRole.ADMIN).size();
+    int bookingCount = bookingService.getAllBookings().size();
+
+    if (role.isBlank() || role == null) {
+      users = userService.getAllUsers();
+    } else if (role.equals("ADMIN")) {
+      users = userService.getUserByRole(UserRole.ADMIN);
+    } else if (role.equals("CLIENT")) {
+      users = userService.getUserByRole(UserRole.CLIENT);
+    }
+
+    for (User user : users) {
+
+      int totalBookings = bookingService.getBookingsForUser(user).size();
+      AdminUserRow row = new AdminUserRow(user, totalBookings);
+      rows.add(row);
+
+    }
+
+    model.addAttribute("rows", rows);
+    model.addAttribute("userCount", userCount);
+    model.addAttribute("adminCount", adminCount);
+    model.addAttribute("bookingCount", bookingCount);
+
+    return "admin/users";
   }
 
 }

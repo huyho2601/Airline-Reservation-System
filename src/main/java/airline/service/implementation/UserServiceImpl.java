@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<User> getUserByRole(UserRole role) {
+    return userRepository.findByRole(role);
+  }
+
+  @Override
   public User getUserById(long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new ResourceNotFoundException(USERNOTFOUND + userId));
