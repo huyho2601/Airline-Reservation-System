@@ -20,4 +20,9 @@ public interface FlightService {
   Flight updateFlight(String flightNumber, UpdateFlightRequest request);
 
   void deleteFlight(String flightNumber);
+
+  List<Flight> getUpcomingFlights();
+
+  List<Flight> getPastFlights();
+
 }

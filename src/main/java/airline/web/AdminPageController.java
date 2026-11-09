@@ -42,17 +42,18 @@ public class AdminPageController {
     if (flightNumber == null || flightNumber.isBlank()) {
       switch (filter) {
         case "upcoming":
-
+          flights = flightService.getUpcomingFlights();
           break;
 
         case "past":
+          flights = flightService.getPastFlights();
           break;
 
         case "all":
           flights = flightService.getAllFlights();
           break;
         default:
-
+          flights = flightService.getAllFlights();
           break;
       }
     } else {

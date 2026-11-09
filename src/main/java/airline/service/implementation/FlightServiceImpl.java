@@ -46,6 +46,19 @@ public class FlightServiceImpl implements FlightService {
   }
 
   @Override
+  public List<Flight> getUpcomingFlights() {
+    List<Flight> upcoming = flightRepository.findByDepartureTimeAfterOrderByDepartureTimeAsc(LocalDateTime.now());
+
+    return upcoming;
+  }
+
+  @Override
+  public List<Flight> getPastFlights() {
+    List<Flight> past = flightRepository.findByDepartureTimeBeforeOrderByDepartureTimeDesc(LocalDateTime.now());
+    return past;
+  }
+
+  @Override
   @Transactional
   public Flight createFlight(CreateFlightRequest createRequest) {
 
@@ -131,7 +144,8 @@ public class FlightServiceImpl implements FlightService {
     LocalDateTime start = from.atStartOfDay();
     LocalDateTime end = to.atTime(23, 59, 59);
 
-    // SearchFlightRequest searchRequest = new SearchFlightRequest(origin, destination, from, to);
+    // SearchFlightRequest searchRequest = new SearchFlightRequest(origin,
+    // destination, from, to);
     // new SearchFlightRequest(origin, destination, start, end);
 
     return flightRepository.findByOriginIgnoreCaseAndDestinationIgnoreCaseAndDepartureTimeBetween(
