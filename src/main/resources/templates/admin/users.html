@@ -28,7 +28,6 @@
       <div th:if="${success}" th:text="${success}" class="alert alert-success"></div>
       <div th:if="${error}" th:text="${error}" class="alert alert-danger"></div>
 
-      <!-- Stat cards -->
       <div class="row g-3 mb-3">
         <div class="col-12 col-sm-4">
           <div class="card shadow-sm h-100">
@@ -125,7 +124,6 @@
 
                   <td class="text-break" th:text="${user.userEmail}">test@mail.com</td>
 
-                  <!-- Role badge -->
                   <td>
                     <span
                       class="badge"
@@ -134,17 +132,14 @@
                     >Role</span>
                   </td>
 
-                  <!-- Must match the component name in your AdminUserRow record -->
+                 
                   <td class="text-end" th:text="${row.totalBookings}">2</td>
 
-                  <!-- Actions -->
                   <td class="text-end text-nowrap">
 
-                    <!-- Your own row: no actions -->
                     <span th:if="${isMe}" class="small text-muted">You</span>
 
                     <th:block th:unless="${isMe}">
-                      <!-- Toggle role: sends the NEW role -->
                       <form
                         th:action="@{/admin/users/{id}/role(id=${user.id})}"
                         method="post"
