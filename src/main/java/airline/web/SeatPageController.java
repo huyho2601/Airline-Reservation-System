@@ -78,14 +78,15 @@ public class SeatPageController {
         CreateBookingRequest request = new CreateBookingRequest(flightNumber, seat);
         bookingService.createBooking(request, user);
       } catch (SeatUnavailableException e) {
-        redirect.addFlashAttribute("error", "Seat {seat}was just taken. Please choose another seat.");
+        redirect.addFlashAttribute("error", "Seat {seat} was just taken. Please choose another seat.");
         return "redirect:/flights/{flightNumber}";
       }
     } else {
       try {
         bookingService.updateSeatBooking(bookingId, seat, user);
       } catch (SeatUnavailableException e) {
-        redirect.addFlashAttribute("error", "Seat {seat}was just taken. Please choose another seat.");
+        redirect.addFlashAttribute("error", "Seat {seat} was just taken. Please choose another seat.");
+        redirect.addAttribute("bookingId", bookingId);
         return "redirect:/bookings/my/{bookingId}/changeSeat";
       }
     }
