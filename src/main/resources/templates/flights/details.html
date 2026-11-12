@@ -86,7 +86,9 @@
 
             <th:block th:switch="${seat.status.name()}">
               <a th:case="'AVAILABLE'"
-                 th:href="@{/flights/{fn}/book(fn=${flight.flightNumber}, seat=${seat.seatNumber})}"
+                 th:href="${changeBooking == null}
+                 ? @{/flights/{fn}/book(fn=${flight.flightNumber}, seat=${seat.seatNumber})}
+                 : @{/flights/{fn}/book(fn=${flight.flightNumber}, seat=${seat.seatNumber}, bookingId=${changeBooking.id})}"
                  class="btn btn-success seat"
                  th:text="${seat.seatNumber}">1A</a>
 

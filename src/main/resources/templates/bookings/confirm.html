@@ -84,7 +84,8 @@
             >
 
             <div class="flex-grow-1 d-flex align-items-center">
-              <p class="text-muted small mb-0">Your seat</p>
+              <p class="text-muted small mb-0"
+              th:text="${bookingId == null} ? 'Your seat' : 'Your new seat'">Your seat</p>
 
               <span
                 th:text="${seat.seatNumber}"
@@ -159,6 +160,7 @@
 
             <form th:action="@{/flights/{fn}/book(fn=${flight.flightNumber})}" method="post" class="flex-grow-1">
               <input type="hidden" name="seat" th:value="${seat.seatNumber}">
+              <input type="hidden" name="bookingId" th:value="${bookingId}">
               <button type="submit" class=" btn btn-primary w-100">
               Confirm booking
             </button>

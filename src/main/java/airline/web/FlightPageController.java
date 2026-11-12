@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-@Controller 
+@Controller
 public class FlightPageController {
 
   private final FlightService flightService;
@@ -32,12 +31,12 @@ public class FlightPageController {
     this.seatService = seatService;
   }
 
-  @GetMapping({"/","/flights"})
+  @GetMapping({ "/", "/flights" })
   public String search(
-    @RequestParam (required = false) String origin,
-    @RequestParam (required = false) String destination,
-    @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-    @RequestParam (required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+      @RequestParam(required = false) String origin,
+      @RequestParam(required = false) String destination,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
       Model model) {
 
     model.addAttribute("origin", origin);
@@ -61,15 +60,13 @@ public class FlightPageController {
 
     return "flights/search";
   }
-  
+
   @GetMapping("/flights/{flightNumber}")
   public String flightDetails(
       @PathVariable String flightNumber,
-        Model model,
-         RedirectAttributes redirectAttributes ) {
+      Model model,
+      RedirectAttributes redirectAttributes) {
 
-    TreeMap<Integer, ArrayList<Seat>> seatMap = new TreeMap<>();
-    
     Flight flight = flightService.getFlightByFlightNumber(flightNumber);
 
     if (flight == null) {
@@ -77,19 +74,13 @@ public class FlightPageController {
       return "redirect:/flights";
     }
 
-    List<Seat> allSeats = seatService.getAllSeats(flightNumber);
-
-    for (Seat seat : allSeats) {
-      String rowString = seat.getSeatNumber().replaceAll("[^0-9]", "");
-      int rowInt = Integer.parseInt(rowString);
-      seatMap.computeIfAbsent(rowInt, k -> new ArrayList<>()).add(seat);
-    }
+    TreeMap<Integer, ArrayList<Seat>> seatMap = seatService.getSeatMap(flightNumber);
 
     model.addAttribute("flight", flight);
     model.addAttribute("seatMap", seatMap);
 
     return "flights/details";
   }
-  
-  
+
+
 }

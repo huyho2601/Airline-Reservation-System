@@ -47,6 +47,7 @@ public class SeatPageController {
   public String showBooking(
       @PathVariable String flightNumber,
       @RequestParam String seat,
+      @RequestParam(required = false) Long bookingId,
       @AuthenticationPrincipal CustomUserDetails principal,
       Model model) {
 
@@ -57,6 +58,7 @@ public class SeatPageController {
     model.addAttribute("seat", seatObj);
     model.addAttribute("user", user);
     model.addAttribute("flight", flight);
+    model.addAttribute("bookingId", bookingId);
 
     return "bookings/confirm";
   }
@@ -65,19 +67,28 @@ public class SeatPageController {
   public String confirmBooking(
       @PathVariable String flightNumber,
       @RequestParam String seat,
+      @RequestParam(required = false) Long bookingId,
       @AuthenticationPrincipal CustomUserDetails principal,
       RedirectAttributes redirect) {
 
     User user = userService.getUserByUserName(principal.getUsername());
 
-    try {
-      CreateBookingRequest request = new CreateBookingRequest(flightNumber, seat);
-      bookingService.createBooking(request, user);
-    } catch (SeatUnavailableException e) {
-      redirect.addFlashAttribute("error", "Seat {seat}was just taken. Please choose another seat.");
-      return "redirect:/flights/{flightNumber}";
+    if (bookingId == null) {
+      try {
+        CreateBookingRequest request = new CreateBookingRequest(flightNumber, seat);
+        bookingService.createBooking(request, user);
+      } catch (SeatUnavailableException e) {
+        redirect.addFlashAttribute("error", "Seat {seat}was just taken. Please choose another seat.");
+        return "redirect:/flights/{flightNumber}";
+      }
+    } else {
+      try {
+        bookingService.updateSeatBooking(bookingId, seat, user);
+      } catch (SeatUnavailableException e) {
+        redirect.addFlashAttribute("error", "Seat {seat}was just taken. Please choose another seat.");
+        return "redirect:/bookings/my/{bookingId}/changeSeat";
+      }
     }
-
     redirect.addFlashAttribute("success", "Booking Confirmed!");
 
     return "redirect:/bookings/my";

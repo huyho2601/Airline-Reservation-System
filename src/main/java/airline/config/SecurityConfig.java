@@ -10,24 +10,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
-@EnableMethodSecurity 
+@EnableMethodSecurity
 public class SecurityConfig {
 
-  private static final String FLIGHT = "/api/flights";
-  private static final String USER = "/api/users";
-  private static final String BOOKING = "/api/bookings";
-  private static final String ADMIN = "ADMIN";
+    private static final String FLIGHT = "/api/flights";
+    private static final String USER = "/api/users";
+    private static final String BOOKING = "/api/bookings";
+    private static final String ADMIN = "ADMIN";
 
-    @Bean @Order(1)
+    @Bean
+    @Order(1)
     SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Flight
-                        .requestMatchers(HttpMethod.GET, FLIGHT).permitAll() //flightNumber, search, seats on that flights
+                        .requestMatchers(HttpMethod.GET, FLIGHT).permitAll() // flightNumber, search, seats on that
+                                                                             // flights
                         .requestMatchers(HttpMethod.POST, FLIGHT).hasRole(ADMIN)
                         .requestMatchers(HttpMethod.PUT, FLIGHT + "/**").hasRole(ADMIN)
                         .requestMatchers(HttpMethod.DELETE, FLIGHT + "/**").hasRole(ADMIN)
@@ -41,26 +42,27 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-    
-    @Bean @Order(2)
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error").permitAll()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/login").permitAll()
-                .requestMatchers("/flights").permitAll()
-                .requestMatchers("/register").permitAll()
-                .requestMatchers("/css/**").permitAll()
-                .requestMatchers("/js/**").permitAll()
-                .requestMatchers("/admin/**").hasRole(ADMIN)
-                .anyRequest().authenticated())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/flights").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/css/**").permitAll()
+                        .requestMatchers("/js/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole(ADMIN)
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/dashboard")
-                    .failureUrl("/login?error")
-                    .permitAll());
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/")
+                        .failureUrl("/login?error")
+                        .permitAll());
         return http.build();
     }
 }

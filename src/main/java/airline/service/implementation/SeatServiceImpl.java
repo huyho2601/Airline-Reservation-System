@@ -1,7 +1,10 @@
 package airline.service.implementation;
 
 import airline.repository.BookingRepository;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,5 +107,17 @@ public class SeatServiceImpl implements SeatService {
     return seatRepository.findByFlightAndSeatNumber(flight, seatNumber)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Seat " + seatNumber + " not found on flight " + flightNumber));
+  }
+
+  @Override
+  public TreeMap<Integer, ArrayList<Seat>> getSeatMap(String flightNumber) {
+    TreeMap<Integer, ArrayList<Seat>> seatMap = new TreeMap<>();
+    List<Seat> allSeats = getAllSeats(flightNumber);
+    for (Seat seat : allSeats) {
+      String rowString = seat.getSeatNumber().replaceAll("[^0-9]", "");
+      int rowInt = Integer.parseInt(rowString);
+      seatMap.computeIfAbsent(rowInt, k -> new ArrayList<>()).add(seat);
+    }
+    return seatMap;
   }
 }
