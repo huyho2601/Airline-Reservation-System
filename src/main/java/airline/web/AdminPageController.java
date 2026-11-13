@@ -211,4 +211,13 @@ public class AdminPageController {
     return "admin/users";
   }
 
+  @PostMapping("/admin/flights/{flightNumber}/delete")
+  public String deleteFLight(
+      @PathVariable String flightNumber) {
+
+    flightService.deleteFlight(flightNumber);
+
+    return "redirect:/admin/flights";
+  }
+
 }
