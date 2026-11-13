@@ -38,7 +38,7 @@
       <div th:each="booking : ${bookings}" class="card shadow-sm mb-3">
         <div class="card-body">
           <div
-            th:replace="~{fragments/booking :: summary(${booking.seat.flight}, ${booking.seat}, ${booking.id})}"
+            th:replace="~{fragments/booking :: summary(${booking.seat.flight}, ${booking.seat}, ${booking.id}, false)}"
           ></div>
         </div>
       </div>

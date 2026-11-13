@@ -20,6 +20,7 @@ import airline.dto.AdminUserRow;
 import airline.dto.CreateFlightRequest;
 import airline.dto.RegisterForm;
 import airline.dto.UpdateFlightRequest;
+import airline.entity.Booking;
 import airline.entity.Flight;
 import airline.entity.Seat;
 import airline.entity.User;
@@ -218,6 +219,25 @@ public class AdminPageController {
     flightService.deleteFlight(flightNumber);
 
     return "redirect:/admin/flights";
+  }
+
+  @GetMapping("/admin/users/bookings/{username}")
+  public String viewUserBookings(
+      @PathVariable String username,
+      Model model) {
+
+    User user = userService.getUserByUserName(username);
+
+    List<Booking> bookings = bookingService.getBookingsForUser(user);
+
+    String name = user.getName();
+    boolean isAdmin = true;
+
+    model.addAttribute("bookings", bookings);
+    model.addAttribute("name", name);
+    model.addAttribute("isAdmin", isAdmin);
+
+    return "admin/bookingsView";
   }
 
 }

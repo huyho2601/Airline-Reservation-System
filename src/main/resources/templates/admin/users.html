@@ -25,7 +25,11 @@
     <main class="container mb-5">
       <h1 class="h4 mb-3">Manage users</h1>
 
-      <div th:if="${success}" th:text="${success}" class="alert alert-success"></div>
+      <div
+        th:if="${success}"
+        th:text="${success}"
+        class="alert alert-success"
+      ></div>
       <div th:if="${error}" th:text="${error}" class="alert alert-danger"></div>
 
       <div class="row g-3 mb-3">
@@ -57,7 +61,6 @@
 
       <div class="card shadow-sm">
         <div class="card-body">
-
           <!-- Filter bar -->
           <form th:action="@{/admin/users}" method="get" class="row g-2 mb-3">
             <div class="col-12 col-md">
@@ -72,9 +75,15 @@
 
             <div class="col-8 col-md-3">
               <select name="role" class="form-select">
-                <option value="" th:selected="${role == null or role == ''}">All roles</option>
-                <option value="CLIENT" th:selected="${role == 'CLIENT'}">Users</option>
-                <option value="ADMIN" th:selected="${role == 'ADMIN'}">Admins</option>
+                <option value="" th:selected="${role == null or role == ''}">
+                  All roles
+                </option>
+                <option value="CLIENT" th:selected="${role == 'CLIENT'}">
+                  Users
+                </option>
+                <option value="ADMIN" th:selected="${role == 'ADMIN'}">
+                  Admins
+                </option>
               </select>
             </div>
 
@@ -85,7 +94,10 @@
             </div>
           </form>
 
-          <p th:if="${#lists.isEmpty(rows)}" class="text-muted text-center my-4">
+          <p
+            th:if="${#lists.isEmpty(rows)}"
+            class="text-muted text-center my-4"
+          >
             No users match your search.
           </p>
 
@@ -114,44 +126,68 @@
                       <span
                         class="avatar rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center fw-semibold small me-2 flex-shrink-0"
                         th:text="${#strings.toUpperCase(#strings.substring(user.name, 0, 1))}"
-                      >U</span>
+                        >U</span
+                      >
                       <div>
-                        <div class="fw-semibold" th:text="${user.name}">User 1</div>
-                        <div class="small text-muted" th:text="${user.username}">user</div>
+                        <div class="fw-semibold" th:text="${user.name}">
+                          User 1
+                        </div>
+                        <div
+                          class="small text-muted"
+                          th:text="${user.username}"
+                        >
+                          user
+                        </div>
                       </div>
                     </div>
                   </td>
 
-                  <td class="text-break" th:text="${user.userEmail}">test@mail.com</td>
+                  <td class="text-break" th:text="${user.userEmail}">
+                    test@mail.com
+                  </td>
 
                   <td>
                     <span
                       class="badge"
                       th:classappend="${isAdmin} ? 'text-bg-dark' : 'text-bg-light border'"
                       th:text="${isAdmin} ? 'Admin' : 'User'"
-                    >Role</span>
+                      >Role</span
+                    >
                   </td>
 
-                 
                   <td class="text-end" th:text="${row.totalBookings}">2</td>
 
                   <td class="text-end text-nowrap">
-
                     <span th:if="${isMe}" class="small text-muted">You</span>
 
                     <th:block th:unless="${isMe}">
+                      <a
+                        th:href="@{/admin/users/bookings/{username}(username=${user.username})}"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="Edit"
+                      >
+                        <i class="bi bi-eye-fill"></i>
+                      </a>
+
                       <form
                         th:action="@{/admin/users/{id}/role(id=${user.id})}"
                         method="post"
                         class="d-inline"
                       >
-                        <input type="hidden" name="role" th:value="${isAdmin} ? 'CLIENT' : 'ADMIN'" />
+                        <input
+                          type="hidden"
+                          name="role"
+                          th:value="${isAdmin} ? 'CLIENT' : 'ADMIN'"
+                        />
                         <button
                           type="submit"
                           class="btn btn-sm btn-outline-secondary"
                           th:title="${isAdmin} ? 'Remove admin' : 'Make admin'"
                         >
-                          <i class="bi" th:classappend="${isAdmin} ? 'bi-person-down' : 'bi-person-up'"></i>
+                          <i
+                            class="bi"
+                            th:classappend="${isAdmin} ? 'bi-person-down' : 'bi-person-up'"
+                          ></i>
                         </button>
                       </form>
 
@@ -161,20 +197,26 @@
                         method="post"
                         class="d-inline"
                         th:data-name="${user.username}"
-                        onsubmit="return confirm('Delete user ' + this.dataset.name + '?')"
+                        onsubmit="
+                          return confirm(
+                            'Delete user ' + this.dataset.name + '?',
+                          );
+                        "
                       >
-                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                        <button
+                          type="submit"
+                          class="btn btn-sm btn-outline-danger"
+                          title="Delete"
+                        >
                           <i class="bi bi-trash"></i>
                         </button>
                       </form>
                     </th:block>
-
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-
         </div>
       </div>
     </main>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <body>
-    <div th:fragment="summary(flight, seat, bookingId)">
+    <div th:fragment="summary(flight, seat, bookingId, isAdmin)">
       <div class="py-3 border-top-0 d-flex align-items-center gap-3">
         <span
           class="rounded-circle d-inline-flex align-items-center justify-content-center bg-primary-subtle flex-shrink-0 text-primary-emphasis small fw-semibold circle"
@@ -86,17 +86,8 @@
         </div>
       </div>
 
-      <div class="py-3 border-top d-flex align-items-center gap-3">
-        <!-- <form
-          th:action="@{/bookings/my/{id}/changeSeat(id=${bookingId})}"
-          method="post"
-          class="d-inline"
-        >
-          <input type="hidden" name="flight" th:value="${flightNumber}" />
-          <button type="submit" class="btn btn-secondary w-100">
-            Change seat
-          </button>
-        </form> -->
+      <div th:if="${isAdmin == false}" class="py-3 border-top d-flex align-items-center gap-3">
+        
 
         <a th:href="@{/bookings/my/{id}/changeSeat(id=${bookingId})}" class="btn btn-primary">Change seat</a>
 
