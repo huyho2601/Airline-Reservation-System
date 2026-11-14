@@ -124,11 +124,11 @@ public class UserServiceImpl implements UserService {
   public User updateUserPassword(long userId, PasswordChangeRequest request) {
     User currentUser = getUserById(userId);
 
-    if (!passwordEncoder.matches(request.currentPassword(), currentUser.getPassword())) {
+    if (!passwordEncoder.matches(request.getCurrentPassword(), currentUser.getPassword())) {
       throw new InvalidCredentialsException("Password not matched");
     }
 
-    currentUser.setPassword(passwordEncoder.encode(request.newPassword()));
+    currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
     return userRepository.save(currentUser);
   }
