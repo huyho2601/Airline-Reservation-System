@@ -60,6 +60,25 @@ public class BookingServiceImpl implements BookingService {
     return bookingRepository.findByUser(user);
   }
 
+  @Override
+  public Booking getEarliestFlight(User user) {
+    List<Booking> bookings = getBookingsForUser(user);
+    LocalDateTime earliest = LocalDateTime.MAX;
+    LocalDateTime now = LocalDateTime.now();
+    Booking booking = null;
+
+    for (Booking each : bookings) {
+      Flight f = each.getSeat().getFlight();
+      if (f.getDepartureTime().isAfter(now)
+          && f.getDepartureTime().isBefore(earliest)) {
+        earliest = f.getDepartureTime();
+        booking = each;
+      }
+    }
+
+    return booking;
+  }
+
   @Transactional
   @Override
   public Booking createBooking(CreateBookingRequest request, User user) {

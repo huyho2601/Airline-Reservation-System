@@ -39,7 +39,7 @@
 
       <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"
             class="d-flex align-items-center gap-2 mb-0">
-        <span class="navbar-text text-white" sec:authentication="principal.realName">user</span>
+        <a th:href="@{/profile}" class="navbar-text text-white" sec:authentication="principal.realName">user</a>
         <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
       </form>
     </div>

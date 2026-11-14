@@ -19,4 +19,6 @@ public interface BookingService {
   public void deleteBooking(long id, User currentUser);
 
   public List<Booking> getBookingsForUser(User user);
+
+  public Booking getEarliestFlight(User user);
 }
