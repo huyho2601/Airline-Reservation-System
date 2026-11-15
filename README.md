@@ -2,6 +2,11 @@
 
 A full-stack airline booking web app. Passengers search for flights, pick a seat on seat map, and book it. Admins manage flights and view registered users.
 
+## Screenshots
+![Flight search](docs/screenshots/flight_search.png)
+![Users list](docs/screenshots/manage_users.png)
+![Seat selection](docs/screenshots/seat_selection.png)
+
 ## Key features
 **Passenger**
 - Register, log in and log out
