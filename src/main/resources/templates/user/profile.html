@@ -24,6 +24,9 @@
     <div th:replace="~{fragments/layout :: navbar}"></div>
 
     <main class="container mb-5">
+
+      <div th:if="${success}" th:text="${success}" class="alert alert-success"></div>
+
       <!--Info card-->
       <div class="card shadow-sm mb-3">
         <div class="card-body d-flex align-items-center gap-3">
@@ -219,6 +222,23 @@
                   <div
                     class="invalid-feedback"
                     th:errors="*{newPassword}"
+                  ></div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label" for="newPassword"
+                    >Confirm new password</label
+                  >
+                  <input
+                    th:field="*{confirmPassword}"
+                    type="password"
+                    class="form-control"
+                    autocomplete="new-password"
+                    th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                  />
+                  <div
+                    class="invalid-feedback"
+                    th:errors="*{confirmPassword}"
                   ></div>
                 </div>
 
