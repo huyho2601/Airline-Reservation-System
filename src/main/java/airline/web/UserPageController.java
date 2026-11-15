@@ -105,8 +105,8 @@ public class UserPageController {
   @PostMapping("/profile/info")
   public String changeProfile(
       @ModelAttribute("infoForm") UpdateUserRequest form,
-      @AuthenticationPrincipal CustomUserDetails principal,
       BindingResult result,
+      @AuthenticationPrincipal CustomUserDetails principal,
       RedirectAttributes redirect,
       Model model) {
 
@@ -143,8 +143,8 @@ public class UserPageController {
   @PostMapping("/profile/password")
   public String changePassword(
       @ModelAttribute("passwordForm") ChangePasswordForm form,
-      @AuthenticationPrincipal CustomUserDetails principal,
       BindingResult result,
+      @AuthenticationPrincipal CustomUserDetails principal,
       RedirectAttributes redirect,
       Model model) {
 

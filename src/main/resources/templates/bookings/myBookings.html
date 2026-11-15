@@ -27,6 +27,7 @@
         th:text="${success}"
         class="alert alert-success"
       ></div>
+      <div th:if="${error}" th:text="${error}" class="alert alert-danger"></div>
 
       <div th:if="${#lists.isEmpty(bookings)}" class="card shadow-sm">
         <div class="card-body text-center text-muted">
